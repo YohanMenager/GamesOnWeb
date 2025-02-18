@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecom</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
+</head>
+<body>
+    <div class="burger" onclick="toggleMenu()">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    
+    <!-- <div class="header"> -->
+        <div class="navbar" id="navbar">
+            <div class="logo">
+                <h1>HEADBOOST</h1>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li class="li" data-section="Accueil">Accueil</li>
+                    <li class="li" data-section="Jeu1">Jeu 1</li>
+                    <li class="li" data-section="Jeu2">Jeu 2</li>
+                    <li class="li" data-section="Jeu3">Jeu 3</li>
+                    <!-- <li><a><button>Acheter</button></a></li> -->
+                    <li class="li" data-section="Connexion"><button>Connexion</button></li>
+                </ul>
+            </div>
+
+           
+        </div>
+
+     <!-- Conteneur pour le contenu dynamique -->
+    <div id="content" class="content">
+        <!-- Le contenu des sections sera chargé ici -->
+    </div>   
+
+
+    <footer>
+        <div class="column">
+            <h3>Aide</h3>
+            <p>contact@headboost.fr</p>
+            <p>Contactez-nous</p>
+            <p>Comment acheter</p>            
+        </div>
+        <div class="column">
+            <h3>Recrutement</h3>
+            <p>business@headboost.fr</p>
+            <p>Postuler en ligne</p>
+            <p>Comment faire ?</p>
+        </div>
+        <div class="column">
+            <h3>Réseaux</h3>
+            <p>Facebook</p>
+            <p>Twitter</p>
+            <p>Instagram</p>            
+        </div>        
+    </footer>
+
+    <script src="index.js"></script>
+
+</body>
+</html>

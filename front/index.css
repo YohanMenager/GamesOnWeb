@@ -1,0 +1,374 @@
+body
+{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: white;
+    font-size: 1em;
+    background: linear-gradient(#13181d, #341b47);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.burger
+{
+    display: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+.line
+{
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+ul
+{
+    list-style: none;
+}
+.navbar
+{
+    display: flex;
+    justify-content: space-between;
+    /* background-color: #222; */
+    align-items: center;
+    padding: 0px 5% 0px 5%;
+    flex-direction: row;
+}
+.navbar .logo
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.logo h1
+{
+    color: #d33bfd;
+    text-transform: uppercase;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.nav
+{
+    align-items: center;
+
+    display: flex;
+}
+
+.nav ul{
+    justify-content:space-between;
+    display: flex;
+    align-items: center;
+    
+}
+.nav ul li
+{
+    margin: 0 10px;
+}
+.nav ul .li
+{
+    color: white;
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.nav ul .li:hover
+{
+    color: violet;
+}
+
+.nav ul .li button
+{
+    padding: 5px 10px;
+    background-color: unset;
+    color: #d33bfd;
+    border: solid #d33bfd 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    font-size: 1.5em;
+}
+.nav ul .li button:hover
+{
+    background-color: #d33bfd;
+    color: white;
+}
+
+.nav ul .active
+{
+    color: #d33bfd;
+}
+
+
+.header
+{
+    background: linear-gradient(#13181d, #20212e, #341b47);
+    background-size: cover;
+}
+
+.second
+{
+    margin: 0;
+  background-color: #13181d;
+}
+
+
+.hero
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5% 10%;
+}
+
+.presentation
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 5%;
+    margin-top: 5%;
+}
+.product-presentation
+{
+    width: 100%;
+    flex-shrink: 3;
+}
+.product-presentation h1
+{
+    font-size: 4vw;
+    width: 80%;
+    margin: 0;
+}
+.product-presentation p
+{
+    color: white;
+    font-weight: 300;
+}
+.product-presentation button
+{
+    padding: 10px 20px;
+    background-color: #d33bfd;
+    color: white;
+    border: solid #d33bfd 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.product-presentation button:hover
+{
+    background-color: unset;
+    color: #d33bfd;
+}
+
+.small-images
+{
+    display: flex;
+    width: 100%;
+    margin-top: 30px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.small-images .small
+{
+    padding: 20px;
+    background-color: #33314d;
+    margin: 0 15px 15px 0;
+    border-radius: 20px;
+    transition: filter 0.5s;
+}
+.small-images .small:hover
+{
+    filter: brightness(50%);
+}
+
+.small-images .small img 
+{
+    width: 120px;
+    height: auto;
+}
+.presentation .image-presentation img
+{
+    width: 100%;
+    height: auto;
+}
+
+.new
+{
+    color: #d33bfd!important;
+}
+
+.second
+{
+    margin: 0;
+}
+
+footer
+{
+    margin: 0;
+    padding: 20px;
+    background-color: black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    /* width: 100%; */
+    position: relative;
+    bottom: 0;
+}
+footer h3
+{
+    color: #d33bfd;
+}
+footer p
+{
+    cursor: pointer;
+    color: #ccc;
+}
+
+
+
+/*-------------------------------écran téléphone-------------------------------*/
+
+@media (max-width: 540px)
+{
+    .navbar
+    {
+        /* display: none; */
+        padding: 0;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        justify-content: start;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #13181d;
+        z-index: 1000;
+    }
+    .presentation
+    {
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+    }
+    .presentation .product-presentation
+    {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .presentation .product-presentation h1
+    {
+        font-size:10vw;
+        width: 100%;
+    }
+    .presentation .product-presentation button
+    {
+        margin-top: 20px;
+    }
+
+    .presentation .image-presentation img
+    {
+        width: 60vw;
+    }
+
+    .small-images
+    {
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+
+    }
+    .small-images .small
+    {
+        width: 33%;
+    }
+    .small-images .small img
+    {
+        width: 15vw;
+    }
+
+    footer
+    {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+
+    .burger
+    {
+        display: block;
+        z-index: 1001;
+        cursor: pointer;
+    }
+
+    .navbar.active {
+        transform: translateX(0);
+    }
+    .navbar .logo h1
+    {
+        font-size: 3em;
+        margin-bottom: 20px;
+    }
+
+    .navbar .nav ul
+    {
+        flex-direction: column;
+        align-items: center;
+        justify-content:space-around;
+        margin-top: 20px;
+        text-align: center;
+        list-style: none;
+        padding: 0;
+    }
+    .navbar .nav ul li {
+        margin: 10px 0;
+    }
+    .navbar .nav ul li a
+    {
+        font-size: 2em;
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    .navbar .nav ul li a:hover {
+        color: #d33bfd;
+    }
+
+    .navbar .nav ul li a button
+    {
+        font-size: 0.75em;
+    }
+    .navbar .nav ul li a button:hover
+    {
+        background-color: #d33bfd;
+        color: white;
+    }
+
+
+    .burger.active .line:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 7px);
+    }
+    
+    .burger.active .line:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .burger.active .line:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+}
