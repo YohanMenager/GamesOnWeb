@@ -32,7 +32,7 @@ async function loadSection(section) {
     // Charger le JS de la section
     const script = document.createElement('script');
     script.src = `./sections/${section}/${section}.js`;
-    //script.type = 'module';
+    script.type = 'module';
     document.head.appendChild(script);
 
     if(section == "Jeu1" || section == "Jeu2" || section == "Jeu3")
@@ -49,10 +49,11 @@ async function loadSection(section) {
             // let score = getScoreFromCookie();
             // document.getElementById("score").innerHTML = "Score : " + score;
             // let lienBabylonjs = '<script src="http://cdn.babylonjs.com/2-4/babylon.max.js"></script>';
-            const lienBabylonjs = document.createElement('script');
-            lienBabylonjs.src = "https://cdn.babylonjs.com/babylon.max.js";
-            lienBabylonjs.defer = true;
-            document.head.appendChild(lienBabylonjs);
+
+            // const lienBabylonjs = document.createElement('script');
+            // lienBabylonjs.src = "https://cdn.babylonjs.com/babylon.max.js";
+            // lienBabylonjs.defer = true;
+            // document.head.appendChild(lienBabylonjs);
         }
     }
 
