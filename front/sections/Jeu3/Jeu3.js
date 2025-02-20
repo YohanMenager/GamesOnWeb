@@ -39,19 +39,23 @@ export function initBabylon() {
         box.material = material2;
 
         // Charger la texture des nuages
-        let textureNuage = new BABYLON.Texture("/assets/textures/nuages.jpg", scene);
-        material2.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages.jpg", scene);
+        // let textureNuage = new BABYLON.Texture("/assets/textures/nuages.jpg", scene);
+        // textureNuage.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages.jpg", scene);
 
         let materiauSol = new BABYLON.StandardMaterial("materiauSol", scene);
 
-        materiauSol.diffuseTexture = textureNuage; // Applique la texture
+        materiauSol.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
+        materiauSol.diffuseColor = new BABYLON.Color3(1, 1, 1);
         materiauSol.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+
+        materiauSol.bumpTexture.uScale = 10; // Nombre de répétitions en largeur
+        materiauSol.bumpTexture.vScale = 10; // Nombre de répétitions en hauteur
+        materiauSol.bumpTexture.level = 5; // Augmente l'effet de relief
+        
 
         let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
         sol.material = materiauSol;
 
-        textureNuage.uScale = 5; // Répète horizontalement
-        textureNuage.vScale = 5; // Répète verticalement
 
 
         let camera = new BABYLON.FollowCamera("followCamera", BABYLON.Vector3.Zero(), scene);

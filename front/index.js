@@ -43,8 +43,8 @@ async function loadSection(section) {
             alert("Vous devez être connecté pour accéder à cette section.");
             loadSection("Connexion");
         }
-        if(section == "Jeu3")
-        {
+        // if(section == "Jeu3")
+        // {
             // alert("Le jeu 3 n'est pas encore disponible.");
             // let score = getScoreFromCookie();
             // document.getElementById("score").innerHTML = "Score : " + score;
@@ -54,7 +54,7 @@ async function loadSection(section) {
             // lienBabylonjs.src = "https://cdn.babylonjs.com/babylon.max.js";
             // lienBabylonjs.defer = true;
             // document.head.appendChild(lienBabylonjs);
-        }
+        // }
     }
 
 }
