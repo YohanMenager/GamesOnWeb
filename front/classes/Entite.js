@@ -1,5 +1,8 @@
-export class Ennemi {
-    constructor(name) {
+export class Entite {
+    vitesseY = 0;
+    vitesse = 0;
+
+    constructor() {
 
     }
 

@@ -1,5 +1,5 @@
-export class Ennemi {
-    constructor(name) {
+export class Joueur extends Entite {
+    constructor() {
 
     }
 
