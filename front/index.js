@@ -39,7 +39,7 @@ async function loadSection(section) {
         
 
         const module = await import(script);
-        console.log(module);
+        // console.log(module);
 
         // Si la section chargée est "Connexion", exécuter afficherConnexion()
         if (section === "Connexion" && module.afficherConnexion) {

@@ -39,7 +39,7 @@ export function initBabylon() {
 
 
 
-        let joueur = new Personnage(1, 2, box);
+        let joueur = new Personnage(1, 1.5, box);
 
         /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
 
@@ -75,17 +75,7 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------caméra-----------------------------------------------------------------------------*/
 
-        let camera = new BABYLON.FollowCamera("followCamera", BABYLON.Vector3.Zero(), scene);
-        camera.lockedTarget = box;
-        camera.radius = 10;
-        camera.heightOffset = 15;
-        camera.rotationOffset = 180;
-        camera.cameraAcceleration = 0.1;
-        camera.maxCameraSpeed = 5;
-        camera.fov = 2;
-        // camera.attachControl(canvas, true);
-
-
+        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 4, 50, box.position, scene);
         /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};
