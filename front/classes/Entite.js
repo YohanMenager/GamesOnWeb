@@ -1,16 +1,19 @@
 export class Entite {
-    vitesseY = 0;
-    vitesse = 0;
-
-    constructor() {
-
+    vitesseY;
+    vitesse;
+    vitesseMax;
+    modele;
+    constructor(vitesse, vitesseMax, modele) {
+        this.vitesse = vitesse;
+        this.vitesseMax = vitesseMax;
+        this.modele = modele;
     }
 
     attaquer() {
         throw new Error("la méthode attaquer() doit être implémentée");
     }
 
-    seDeplacer() {
+    seDeplacer(mv) {
         throw new Error("la méthode seDeplacer() doit être implémentée");
     }
 }

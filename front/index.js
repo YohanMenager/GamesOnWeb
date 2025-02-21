@@ -36,12 +36,19 @@ async function loadSection(section) {
     // document.head.appendChild(script);
 
     try {
+        
+
         const module = await import(script);
+        console.log(module);
 
         // Si la section chargée est "Connexion", exécuter afficherConnexion()
         if (section === "Connexion" && module.afficherConnexion) {
             module.afficherConnexion();
         }
+        if (section === "Jeu3") {
+            module.initBabylon();
+        }
+        
 
         // Attacher les événements dans le HTML
         document.getElementById("login-header")?.addEventListener("click", module.afficherConnexion);
@@ -49,7 +56,7 @@ async function loadSection(section) {
         document.getElementById("connexion-button")?.addEventListener("click", module.connexion);
         document.getElementById("inscription-button")?.addEventListener("click", module.inscription);
     } catch (error) {
-        console.error(`Erreur lors du chargement du module ${modulePath}`, error);
+        console.error(`Erreur lors du chargement du module ${script}`, error.message);
     }
 
 
@@ -60,6 +67,10 @@ async function loadSection(section) {
         {
             alert("Vous devez être connecté pour accéder à cette section.");
             loadSection("Connexion");
+        }
+        else
+        {
+            disableScroll();
         }
         // if(section == "Jeu3")
         // {
@@ -73,6 +84,10 @@ async function loadSection(section) {
             // lienBabylonjs.defer = true;
             // document.head.appendChild(lienBabylonjs);
         // }
+    }
+    else
+    {
+        enableScroll();
     }
 
 }
@@ -143,4 +158,18 @@ function deconnexion()
 {
     deleteCookie("username");
     alert("Déconnexion réussie !");
+}
+
+function disableScroll() {
+    window.addEventListener("keydown", preventScroll);
+}
+
+function enableScroll() {
+    window.removeEventListener("keydown", preventScroll);
+}
+
+function preventScroll(event) {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) {
+        event.preventDefault();
+    }
 }

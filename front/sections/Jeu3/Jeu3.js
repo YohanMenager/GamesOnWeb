@@ -1,19 +1,15 @@
-// import * as BABYLON from "/modules/babylonjs/babylon.js";
-// import { SkyMaterial } from "/modules/babylonjs-materials/babylon.skyMaterial.min.js";
-// import 'babylonjs-materials';
-// console.log(BABYLON);
+import { Personnage } from "/classes/Jeu3/Personnage.js";
+import { Mouvement } from "/classes/Mouvement.js";
 
 
-window.addEventListener("keydown", function(event) {
-    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(event.key)) {
-        event.preventDefault();
-    }
-});
+let engine = null;
+let scene = null;
+
 
 export function initBabylon() {
     let canvas = document.getElementById('canvasJeu3');
     if (!canvas) {
-        console.error("Canvas non trouvé ! Assurez-vous que l'élément existe dans le DOM.");
+        console.error("Canvas non trouvé");
         return;
     }
 
@@ -32,6 +28,7 @@ export function initBabylon() {
         material.wireframe = true;
         box2.material = material;
         box2.position.x = 5;
+        box2.position.y = 2;
         
         let material2 = new BABYLON.StandardMaterial("material2", scene);
         material2.diffuseColor = new BABYLON.Color3(0.2, 0, 0);
@@ -40,9 +37,9 @@ export function initBabylon() {
         material2.bumpTexture = new BABYLON.Texture("/assets/normalMaps/normalMap1.jpg", scene);
         box.material = material2;
 
-        // Charger la texture des nuages
-        // let textureNuage = new BABYLON.Texture("/assets/textures/nuages.jpg", scene);
-        // textureNuage.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages.jpg", scene);
+
+
+        let joueur = new Personnage(1, 2, box);
 
         /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
 
@@ -81,8 +78,15 @@ export function initBabylon() {
         let camera = new BABYLON.FollowCamera("followCamera", BABYLON.Vector3.Zero(), scene);
         camera.lockedTarget = box;
         camera.radius = 10;
-        camera.heightOffset = 0;
-        camera.attachControl(canvas, true);
+        camera.heightOffset = 15;
+        camera.rotationOffset = 180;
+        camera.cameraAcceleration = 0.1;
+        camera.maxCameraSpeed = 5;
+        camera.fov = 2;
+        // camera.attachControl(canvas, true);
+
+
+        /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};
         scene.actionManager = new BABYLON.ActionManager(scene);
@@ -95,12 +99,23 @@ export function initBabylon() {
             BABYLON.ActionManager.OnKeyUpTrigger, evt => inputMap[evt.sourceEvent.key] = false
         ));
 
+        let mv = new Mouvement(0, 0, 0);
         scene.onBeforeRenderObservable.add(() => {
-            let speed = 0.1;
-            if (inputMap["z"]) box.position.z += speed;
-            if (inputMap["s"]) box.position.z -= speed;
-            if (inputMap["q"]) box.position.x -= speed;
-            if (inputMap["d"]) box.position.x += speed;
+            
+            if (inputMap["z"]) mv.z = 1;
+            if (inputMap["s"]) mv.z = -1;
+            if (inputMap["q"]) mv.x = -1;
+            if (inputMap["d"]) mv.x = 1;
+
+            joueur.seDeplacer(mv);
+
+            mv.x = 0;
+            mv.z = 0;
+
+            if(!(inputMap["z"] || inputMap["s"] || inputMap["q"] || inputMap["d"])) {
+                joueur.vitesse = 0.1;
+            }
+
         });
 
 
@@ -109,12 +124,12 @@ export function initBabylon() {
         // lumiere.diffuse = new BABYLON.Color3(0.9, 0.9, 0.9);
         lumiere.intensity = 0.7;
 
-        scene.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                { trigger: BABYLON.ActionManager.OnKeyUpTrigger, parameter: " " },
-                () => lumiere.setEnabled(!lumiere.isEnabled())
-            )
-        );
+        // scene.actionManager.registerAction(
+        //     new BABYLON.ExecuteCodeAction(
+        //         { trigger: BABYLON.ActionManager.OnKeyUpTrigger, parameter: " " },
+        //         () => lumiere.setEnabled(!lumiere.isEnabled())
+        //     )
+        // );
 
         return scene;
     };
@@ -123,14 +138,15 @@ export function initBabylon() {
     engine.runRenderLoop(() => scene.render());
 }
 
-if (typeof BABYLON === 'undefined') {
-    const script = document.createElement('script');
-    script.src = "https://cdn.babylonjs.com/babylon.js";
-    script.onload = function() {
-        console.log("Babylon.js chargé !");
-        initBabylon();
-    };
-    document.head.appendChild(script);
-} else {
-    initBabylon();
-}
+// if (typeof BABYLON === 'undefined') {
+//     const script = document.createElement('script');
+//     script.src = "https://cdn.babylonjs.com/babylon.js";
+//     script.onload = function() {
+//         console.log("Babylon.js chargé !");
+//         initBabylon();
+//     };
+//     document.head.appendChild(script);
+// } 
+// else {
+//     initBabylon();
+// }
