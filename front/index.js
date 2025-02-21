@@ -30,10 +30,28 @@ async function loadSection(section) {
     }
 
     // Charger le JS de la section
-    const script = document.createElement('script');
-    script.src = `./sections/${section}/${section}.js`;
-    script.type = 'module';
-    document.head.appendChild(script);
+    const script = `./sections/${section}/${section}.js`;
+    // script.src = `./sections/${section}/${section}.js`;
+    // script.type = 'module';
+    // document.head.appendChild(script);
+
+    try {
+        const module = await import(script);
+
+        // Si la section chargée est "Connexion", exécuter afficherConnexion()
+        if (section === "Connexion" && module.afficherConnexion) {
+            module.afficherConnexion();
+        }
+
+        // Attacher les événements dans le HTML
+        document.getElementById("login-header")?.addEventListener("click", module.afficherConnexion);
+        document.getElementById("signup-header")?.addEventListener("click", module.afficherInscription);
+        document.getElementById("connexion-button")?.addEventListener("click", module.connexion);
+        document.getElementById("inscription-button")?.addEventListener("click", module.inscription);
+    } catch (error) {
+        console.error(`Erreur lors du chargement du module ${modulePath}`, error);
+    }
+
 
     if(section == "Jeu1" || section == "Jeu2" || section == "Jeu3")
     {
