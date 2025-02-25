@@ -3,7 +3,7 @@ export class Joueur extends Entite {
 
     constructor(vitesse, vitesseMax, modele) {
         super(vitesse, vitesseMax, modele);
-
+        // modele.checkCollisions = true;
     }
 
     attaquer() {

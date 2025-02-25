@@ -1,5 +1,5 @@
 import { Personnage } from "/classes/Jeu3/Personnage.js";
-import { Mouvement } from "/classes/Mouvement.js";
+import { lvl_1 } from "/classes/Jeu3/Niveaux/lvl_1.js";
 
 
 let engine = null;
@@ -43,19 +43,24 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
 
-        let materiauSol = new BABYLON.StandardMaterial("materiauSol", scene);
+        // let materiauSol = new BABYLON.StandardMaterial("materiauSol", scene);
 
-        materiauSol.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
-        materiauSol.diffuseColor = new BABYLON.Color3(1, 1, 1);
+        // materiauSol.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
+        // materiauSol.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.9);
         // materiauSol.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 
-        materiauSol.bumpTexture.uScale = 10; // Nombre de répétitions en largeur
-        materiauSol.bumpTexture.vScale = 10; // Nombre de répétitions en hauteur
-        materiauSol.bumpTexture.level = 1; // Augmente l'effet de relief
+        // materiauSol.bumpTexture.uScale = 10; // Nombre de répétitions en largeur
+        // materiauSol.bumpTexture.vScale = 10; // Nombre de répétitions en hauteur
+        // materiauSol.bumpTexture.level = 10; // Augmente l'effet de relief
         
 
-        let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
-        sol.material = materiauSol;
+        // let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
+        // sol.material = materiauSol;
+
+        /*-----------------------------------------------------------------------------niveau1-----------------------------------------------------------------------------*/
+
+        let niveau1 = new lvl_1(scene);
+        niveau1.afficher();
 
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
@@ -67,7 +72,7 @@ export function initBabylon() {
         skybox.material = skyboxMaterial;
         skybox.infiniteDistance = true;
 
-        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox/ciel", scene);
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox/espace", scene);
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 
         // skyboxMaterial.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5); 
@@ -75,7 +80,8 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------caméra-----------------------------------------------------------------------------*/
 
-        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 4, 50, box.position, scene);
+        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, 3*Math.PI/8, 50, box.position, scene);
+        camera.attachControl(canvas, true);
         /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};
@@ -89,13 +95,15 @@ export function initBabylon() {
             BABYLON.ActionManager.OnKeyUpTrigger, evt => inputMap[evt.sourceEvent.key] = false
         ));
 
-        let mv = new Mouvement(0, 0, 0);
+        let mv = new BABYLON.Vector3(0, 0, 0);
         scene.onBeforeRenderObservable.add(() => {
             
             if (inputMap["z"]) mv.z = 1;
             if (inputMap["s"]) mv.z = -1;
             if (inputMap["q"]) mv.x = -1;
             if (inputMap["d"]) mv.x = 1;
+
+            // mv.y = -1;//si on veut mettre la gravité
 
             joueur.seDeplacer(mv);
 
