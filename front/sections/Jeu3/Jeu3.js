@@ -18,29 +18,15 @@ export function initBabylon() {
         let scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3.White();
 
+        /*-----------------------------------------------------------------------------niveau1-----------------------------------------------------------------------------*/
 
-        /*-----------------------------------------------------------------------------création des objets-----------------------------------------------------------------------------*/
-        let box = BABYLON.Mesh.CreateBox("Box", 4.0, scene);
-        let box2 = BABYLON.Mesh.CreateBox("Box2", 4.0, scene);
-        box.position.y = 2;
+        let niveau1 = new lvl_1(scene);
+        niveau1.afficher();
 
-        let material = new BABYLON.StandardMaterial("material1", scene);
-        material.wireframe = true;
-        box2.material = material;
-        box2.position.x = 5;
-        box2.position.y = 2;
-        
-        let material2 = new BABYLON.StandardMaterial("material2", scene);
-        material2.diffuseColor = new BABYLON.Color3(0.2, 0, 0);
-        material2.emissiveColor = new BABYLON.Color3(0, 0, 0);
-        material2.diffuseTexture = new BABYLON.Texture("/assets/textures/texture1.jpg", scene);
-        material2.bumpTexture = new BABYLON.Texture("/assets/normalMaps/normalMap1.jpg", scene);
-        box.material = material2;
-
-
-
-        let joueur = new Personnage(1, 1.5, box);
-
+        /*-----------------------------------------------------------------------------joueur-----------------------------------------------------------------------------*/
+        let joueur = new Personnage(1.3, 1.5, scene);
+        joueur.modele.position = niveau1.positionDepart;
+   
         /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
 
         // let materiauSol = new BABYLON.StandardMaterial("materiauSol", scene);
@@ -56,11 +42,6 @@ export function initBabylon() {
 
         // let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
         // sol.material = materiauSol;
-
-        /*-----------------------------------------------------------------------------niveau1-----------------------------------------------------------------------------*/
-
-        let niveau1 = new lvl_1(scene);
-        niveau1.afficher();
 
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
@@ -80,8 +61,8 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------caméra-----------------------------------------------------------------------------*/
 
-        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, 3*Math.PI/8, 50, box.position, scene);
-        camera.attachControl(canvas, true);
+        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 6, 50, joueur.modele.position, scene);
+        camera.attachControl(canvas, true);//pour faire des tests
         /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};

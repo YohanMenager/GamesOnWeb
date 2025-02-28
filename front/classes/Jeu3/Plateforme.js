@@ -1,6 +1,23 @@
+/**
+ * Classe Plateforme
+ * représente le sol et le décor
+ */
 export class Plateforme
 {
     static numero = 0;
+
+    /**
+     * 
+     * @param {*} largeur largeur de la plateforme
+     * @param {*} longueur longueur de la plateforme
+     * @param {*} hauteur hauteur de la plateforme
+     * @param {*} positionX position en X
+     * @param {*} positionZ position en Z
+     * @param {*} texture texture de la plateforme
+     * @param {*} normalMap carte de normales pour le relief
+     * @param {*} scene scène où afficher la plateforme
+     * @param {*} relief hauteur du relief pour la normalMap
+     */
     constructor(largeur, longueur, hauteur, positionX, positionZ, texture, normalMap, scene, relief)
     {
         this.largeur = largeur;
@@ -58,11 +75,11 @@ export class Plateforme
     genererUV()
     {
         const faceUV = [];
-        faceUV[0] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//arrière -- correct
-        faceUV[1] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//avant -- correct
-        faceUV[2] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//droite -- correct ?
-        faceUV[3] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//gauche -- correct ?
-        faceUV[4] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//haut --correct ?
+        faceUV[0] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//arrière 
+        faceUV[1] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//avant 
+        faceUV[2] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//droite
+        faceUV[3] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//gauche 
+        faceUV[4] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//haut 
         faceUV[5] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//bas
 
 

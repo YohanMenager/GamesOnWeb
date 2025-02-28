@@ -1,5 +1,5 @@
 import {Labyrinthe} from "../Labyrinthe.js";
-import {Cauchemard} from "../Cauchemar.js";
+import {Ennemi} from "../../Ennemi.js";
 import { Plateforme } from "../Plateforme.js";
 import { Bonus3 } from "../Bonus3.js";
 export class lvl_1 extends Labyrinthe

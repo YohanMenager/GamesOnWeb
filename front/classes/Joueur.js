@@ -1,16 +1,17 @@
-import { Entite } from './Entite.js';
+import { Entite } from './Entite.js';//un joueur est une entité
+
+/**
+ * représente un joueur, qui est une entité
+ */
 export class Joueur extends Entite {
 
-    constructor(vitesse, vitesseMax, modele) {
-        super(vitesse, vitesseMax, modele);
-        // modele.checkCollisions = true;
+
+
+    //servira à créer le joueur dans la scène
+    creerJoueur()
+    {
+        throw new Error("la méthode creerJoueur() doit être implémentée");
     }
 
-    attaquer() {
-        throw new Error("la méthode attaquer() doit être implémentée");
-    }
 
-    seDeplacer(mv) {
-        throw new Error("la méthode seDeplacer() doit être implémentée");
-    }
 }
