@@ -1,6 +1,6 @@
 import { Personnage } from "/classes/Jeu3/Personnage.js";
-import { lvl_1 } from "/classes/Jeu3/Niveaux/lvl_1.js";
-
+import { ChargeurDreamz } from "/classes/Jeu3/ChargeurDreamz.js";
+import { MenuDreamz } from "/classes/Jeu3/MenuDreamz.js";
 
 let engine = null;
 let scene = null;
@@ -14,18 +14,32 @@ export function initBabylon() {
     }
 
     let engine = new BABYLON.Engine(canvas, true);
+    /**
+     * Cette fonction initialise la scène Babylon.
+     * note : J'aurais pu créer une scène par niveau, mais cela fait plus de chargement et c'est moins optimisé,
+     * en particulier pour un jeu de type labyrinthe où les niveaux sont très similaires.
+     * @returns {BABYLON.Scene}
+     */
     let createScene = function(){
         let scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3.White();
 
-        /*-----------------------------------------------------------------------------niveau1-----------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------chargement-----------------------------------------------------------------------------*/
 
-        let niveau1 = new lvl_1(scene);
-        niveau1.afficher();
+        // let niveau1 = new lvl_1(scene);
+        // niveau1.afficher();
+
+        const chargeur = new ChargeurDreamz(scene);
+        const menu = new MenuDreamz(chargeur, 1);
+        menu.afficherMenu();
+        menu.demarrerNiveau(1);
+
+        
+        scene.collisionsEnabled = true; // Active la gestion des collisions globalement, utile pour que le joueur ne soit pas à moitié dans les murs en cas de collisions
 
         /*-----------------------------------------------------------------------------joueur-----------------------------------------------------------------------------*/
-        let joueur = new Personnage(1.3, 1.5, scene);
-        joueur.modele.position = niveau1.positionDepart;
+        let joueur = new Personnage(1.1, 1.3, scene);
+        joueur.modele.position = chargeur.niveau.positionDepart;
    
         /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
 
@@ -42,6 +56,7 @@ export function initBabylon() {
 
         // let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
         // sol.material = materiauSol;
+
 
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
@@ -62,7 +77,7 @@ export function initBabylon() {
         /*-----------------------------------------------------------------------------caméra-----------------------------------------------------------------------------*/
 
         let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 6, 50, joueur.modele.position, scene);
-        camera.attachControl(canvas, true);//pour faire des tests
+        // camera.attachControl(canvas, true);//pour faire des tests
         /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};

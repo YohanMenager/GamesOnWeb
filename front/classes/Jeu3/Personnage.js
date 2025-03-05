@@ -14,7 +14,20 @@ export class Personnage extends Joueur {
         super(vitesse, vitesseMax, null);
         this.scene = scene;
         this.modele = this.creerJoueur();
-        this.modele.checkCollisions = true;
+
+        this.hitbox = BABYLON.Mesh.CreateBox("hitbox", 4.0, this.scene);
+        this.hitbox.material = new BABYLON.StandardMaterial("hitboxMaterial", this.scene);
+        this.hitbox.material.alpha = 0.5;
+        this.hitbox.material.wireframe = true;//pour tester et voir la hitbox
+        this.hitbox.isVisible = false;
+        this.hitbox.checkCollisions = true;
+
+        //aide en partie à empêcher le joueur de passer à travers les murs
+        //babylonjs utilise un ellipsoïde pour la hitbox, qui est plus précis qu'une boîte et qui est invisible
+        this.hitbox.ellipsoid = new BABYLON.Vector3(2, 2, 2); // Définit un volume de collision
+        this.hitbox.ellipsoidOffset = new BABYLON.Vector3(0, 2, 0); // Décale vers le haut
+
+        this.hitbox.position = this.modele.position.clone();
 
     }
 
@@ -44,7 +57,10 @@ export class Personnage extends Joueur {
     seDeplacer(mv) {
 
         //le joueur se déplace, en ne passant pas à travers les murs. on multiplie par la vitesse
-        this.modele.moveWithCollisions(new BABYLON.Vector3(mv.x * this.vitesse, mv.y, mv.z * this.vitesse));
+        this.hitbox.moveWithCollisions(new BABYLON.Vector3(mv.x * this.vitesse, mv.y, mv.z * this.vitesse));
+
+        // Synchronisation du modèle avec la hitbox, sinon la hitbox bouge toute seule
+        this.modele.position.copyFrom(this.hitbox.position);
 
         //la vitesse augmente progressivement, sauf si on atteint la vitesse maximale
         if(this.vitesse < this.vitesseMax) {
