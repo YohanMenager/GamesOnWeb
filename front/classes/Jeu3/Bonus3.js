@@ -36,6 +36,7 @@ export class Bonus3 extends Bonus
 
         //création d'un halo autour de l'objet
         let glowLayer = new BABYLON.GlowLayer("glow", this.scene);
+        glowLayer.renderingGroupId = 0;//sert à que ce qui brille ne brille pas à travers les murs. probablement pas nécessaire à cause de l'angle de vue mais on sait jamais
         glowLayer.intensity = 0.5
         glowLayer.unlit = true;
         glowLayer.addIncludedOnlyMesh(sphere);

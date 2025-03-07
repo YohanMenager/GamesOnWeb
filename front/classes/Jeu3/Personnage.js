@@ -34,7 +34,8 @@ export class Personnage extends Joueur {
     creerJoueur()
     {
         let box = BABYLON.Mesh.CreateBox("Box", 4.0, this.scene);
-        box.position.y = 2;
+        box.renderingGroupId = 1;//sert à que ce qui brille ne brille pas à travers le joueur. probablement pas nécessaire à cause de l'angle de vue mais on sait jamais
+        // box.position.y = 2;
 
         let material = new BABYLON.StandardMaterial("material", this.scene);
         material.diffuseColor = new BABYLON.Color3(0.2, 0, 0);

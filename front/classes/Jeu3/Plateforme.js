@@ -18,13 +18,11 @@ export class Plateforme
      * @param {*} scene scène où afficher la plateforme
      * @param {*} relief hauteur du relief pour la normalMap
      */
-    constructor(largeur, longueur, hauteur, positionX, positionZ, texture, normalMap, scene, relief)
+    constructor(largeur, longueur, hauteur, positionX, positionY, positionZ, texture, normalMap, scene, relief)
     {
         this.largeur = largeur;
         this.longueur = longueur;
 
-        this.positionX = positionX;
-        this.positionZ = positionZ;
        
 
         this.mesh = BABYLON.MeshBuilder.CreateBox(
@@ -35,7 +33,7 @@ export class Plateforme
                 }, 
                 scene);
 
-
+        this.mesh.renderingGroupId = 1;//sert à que ce qui brille ne brille pas à travers les murs. probablement pas nécessaire à cause de l'angle de vue mais on sait jamais
         // let materiau = new BABYLON.StandardMaterial("materiauSol", scene);
         const materiau = new BABYLON.StandardMaterial("materiau", scene);
         // const materiauFace = new BABYLON.StandardMaterial("materiauFace", scene);
@@ -67,7 +65,7 @@ export class Plateforme
         // materiau.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
  
         this.mesh.material = materiau;
-        this.mesh.position.set(positionX, -5, positionZ);
+        this.mesh.position.set(positionX, positionY, positionZ);
         this.mesh.checkCollisions = true;
         Plateforme.numero++;
     }

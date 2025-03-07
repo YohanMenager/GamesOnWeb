@@ -26,9 +26,6 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------chargement-----------------------------------------------------------------------------*/
 
-        // let niveau1 = new lvl_1(scene);
-        // niveau1.afficher();
-
         const chargeur = new ChargeurDreamz(scene);
         const menu = new MenuDreamz(chargeur, 1);
         menu.afficherMenu();
@@ -39,23 +36,10 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------joueur-----------------------------------------------------------------------------*/
         let joueur = new Personnage(1.1, 1.3, scene);
-        joueur.modele.position = chargeur.niveau.positionDepart;
+        joueur.hitbox.position = chargeur.niveau.positionDepart;
+        console.log(chargeur.niveau.positionDepart);
+        console.log(joueur.hitbox.position);
    
-        /*-----------------------------------------------------------------------------sol-----------------------------------------------------------------------------*/
-
-        // let materiauSol = new BABYLON.StandardMaterial("materiauSol", scene);
-
-        // materiauSol.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
-        // materiauSol.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.9);
-        // materiauSol.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-
-        // materiauSol.bumpTexture.uScale = 10; // Nombre de répétitions en largeur
-        // materiauSol.bumpTexture.vScale = 10; // Nombre de répétitions en hauteur
-        // materiauSol.bumpTexture.level = 10; // Augmente l'effet de relief
-        
-
-        // let sol = BABYLON.MeshBuilder.CreateGround("sol", { width: 500, height: 500 }, scene);
-        // sol.material = materiauSol;
 
 
 
@@ -76,8 +60,11 @@ export function initBabylon() {
 
         /*-----------------------------------------------------------------------------caméra-----------------------------------------------------------------------------*/
 
-        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 6, 50, joueur.modele.position, scene);
-        // camera.attachControl(canvas, true);//pour faire des tests
+        //j'utilise une caméra arcrotate pour pouvoir tourner autour du joueur
+        //j'utilise un arcrotate car je veux que la caméra soit toujours à la même hauteur,
+        //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
+        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 6, 50, joueur.hitbox.position, scene);
+        camera.attachControl(canvas, true);//pour faire des tests
         /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
 
         let inputMap = {};
@@ -102,6 +89,7 @@ export function initBabylon() {
             // mv.y = -1;//si on veut mettre la gravité
 
             joueur.seDeplacer(mv);
+            // console.log(joueur.modele.position);
 
             mv.x = 0;
             mv.z = 0;
@@ -118,12 +106,6 @@ export function initBabylon() {
         // lumiere.diffuse = new BABYLON.Color3(0.9, 0.9, 0.9);
         lumiere.intensity = 0.7;
 
-        // scene.actionManager.registerAction(
-        //     new BABYLON.ExecuteCodeAction(
-        //         { trigger: BABYLON.ActionManager.OnKeyUpTrigger, parameter: " " },
-        //         () => lumiere.setEnabled(!lumiere.isEnabled())
-        //     )
-        // );
 
         return scene;
     };
