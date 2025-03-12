@@ -7,6 +7,7 @@ import Sortie from "./Sortie.js";
 import ObjetSpecial from "./ObjetSpecial.js";
 import PowerUp from "./PowerUp.js";
 import Ennemi from "./Ennemi.js";
+import Particle from "./Particles.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -199,6 +200,16 @@ export default class Game {
             if (obj instanceof PowerUp && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
             console.log ("Power-up ramassé !"); 
 
+            //Génération de particules
+            for (let i = 0; i < 20; i++) {
+                const vitesseX = (Math.random() - 0.5) * 4;
+                const vitesseY = (Math.random() - 0.5) * 4;
+                const taille = Math.random() * 5 + 2;
+                const couleur = "orange";
+                const particle = new Particle(obj.x + obj.w / 2, obj.y + obj.h / 2, couleur, taille, vitesseX, vitesseY);
+                this.objetsGraphiques.push(particle);
+            }
+
             //Réduire sa largeur de 05% et sa hauteur de 05%
             this.player.w *= 0.95;
             this.player.h *= 0.95;
@@ -220,6 +231,15 @@ export default class Game {
                     window.location.reload(); // Recharger la page
                 }
             }
+        });
+
+        // Mise à jour des particules
+        this.objetsGraphiques = this.objetsGraphiques.filter(obj => {
+            if (obj instanceof Particle) {
+                obj.move();
+                return obj.dureeDeVie > 0; // Supprimer les particules après leur durée de vie
+            }
+            return true;
         });
     }
 
