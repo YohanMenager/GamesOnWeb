@@ -18,8 +18,15 @@ export class Plateforme
      * @param {*} scene scène où afficher la plateforme
      * @param {*} relief hauteur du relief pour la normalMap
      */
-    constructor(largeur, longueur, hauteur, positionX, positionY, positionZ, texture, normalMap, scene, relief)
+    constructor(largeur, longueur, hauteur, positionX, positionY, positionZ, texture, textureCote, normalMap, normalMapCote, scene, relief, opacity)
     {
+        //debug
+        // console.log("plateforme numéro ", Plateforme.numero)
+        // console.log("Texture URL:", texture);
+        // console.log("TextureCote URL:", textureCote);
+        // console.log("NormalMap URL:", normalMap);
+        // console.log("NormalMapCote URL:", normalMapCote);
+
         this.largeur = largeur;
         this.longueur = longueur;
 
@@ -29,65 +36,102 @@ export class Plateforme
             "plateforme_"+Plateforme.numero, 
             { width: largeur, 
                 height: hauteur, 
-                depth: longueur, faceUV: this.genererUV(),
+                depth: longueur, 
                 }, 
                 scene);
+        
+        const multimat = new BABYLON.MultiMaterial("multi", scene);
+        // const materiau = new BABYLON.StandardMaterial("materiau", scene);
+        const materiauFace = new BABYLON.StandardMaterial("materiauFace", scene);
+        const materiauCote = new BABYLON.StandardMaterial("materiauCote", scene);
+        const materiauHaut = new BABYLON.StandardMaterial("materiauHaut", scene)
 
-        this.mesh.renderingGroupId = 1;//sert à que ce qui brille ne brille pas à travers les murs. probablement pas nécessaire à cause de l'angle de vue mais on sait jamais
-        // let materiau = new BABYLON.StandardMaterial("materiauSol", scene);
-        const materiau = new BABYLON.StandardMaterial("materiau", scene);
-        // const materiauFace = new BABYLON.StandardMaterial("materiauFace", scene);
-        // const materiauCote = new BABYLON.StandardMaterial("materiauCote", scene);
+        materiauFace.alpha = opacity;
+        materiauCote.alpha = opacity;
+        materiauHaut.alpha = opacity;
 
         if(texture != null)
         {
-            materiau.diffuseTexture = new BABYLON.Texture(texture, scene);
-            materiau.diffuseTexture.uScale = 1; // Nombre de répétitions en largeur
-            materiau.diffuseTexture.vScale = 1; // Nombre de répétitions en hauteur
+            materiauHaut.diffuseTexture = new BABYLON.Texture(texture, scene);
+            materiauHaut.diffuseTexture.uScale = longueur/10; // Nombre de répétitions en largeur
+            materiauHaut.diffuseTexture.vScale = largeur/10; // Nombre de répétitions en hauteur
 
         }
         else{
-            materiau.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.9);
-            materiau.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);  
+            materiauHaut.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.9);
+            materiauHaut.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);  
         }
+        if(textureCote != null)
+        {
+            materiauCote.diffuseTexture = new BABYLON.Texture(textureCote, scene)
+            materiauCote.diffuseTexture.uScale = hauteur/10;
+            materiauCote.diffuseTexture.vScale = longueur/10;
+
+            materiauFace.diffuseTexture = new BABYLON.Texture(textureCote, scene)
+            materiauFace.diffuseTexture.uScale = largeur/10;
+            materiauFace.diffuseTexture.vScale = hauteur/10;            
+        }
+        else
+        {
+            materiauCote.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.9);
+            materiauCote.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);              
+        }
+
+
         if(normalMap != null)
         {
-            materiau.bumpTexture = new BABYLON.Texture(normalMap, scene);  
-            materiau.bumpTexture.uScale =  1; // Nombre de répétitions en largeur
-            materiau.bumpTexture.vScale =  1; // Nombre de répétitions en hauteur
-            materiau.bumpTexture.level = relief; // Augmente l'effet de relief
+            materiauHaut.bumpTexture = new BABYLON.Texture(normalMap, scene);  
+            materiauHaut.bumpTexture.uScale =  longueur/10; // Nombre de répétitions en longueur
+            materiauHaut.bumpTexture.vScale =  largeur/10; // Nombre de répétitions en largeur
+            materiauHaut.bumpTexture.level = relief; // Augmente l'effet de relief
 
 
-            // materiau.useParallax = true;
-            // materiau.useParallax = true;
 
         }
-        // materiau.bumpTexture = new BABYLON.Texture("/assets/normalMaps/nuages2.jpg", scene);
- 
-        this.mesh.material = materiau;
+        if(normalMapCote != null)
+        {
+            materiauCote.bumpTexture = new BABYLON.Texture(normalMap, scene);  
+            materiauCote.bumpTexture.uScale =  longueur/5; // Nombre de répétitions en largeur
+            materiauCote.bumpTexture.vScale =  hauteur/5; // Nombre de répétitions en hauteur
+            materiauCote.bumpTexture.level = relief; // Augmente l'effet de relief    
+            
+            materiauFace.bumpTexture = new BABYLON.Texture(normalMap, scene);  
+            materiauFace.bumpTexture.uScale =  largeur/5; // Nombre de répétitions en longueur
+            materiauFace.bumpTexture.vScale =  hauteur/5; // Nombre de répétitions en hauteur
+            materiauFace.bumpTexture.level = relief; // Augmente l'effet de relief                  
+        }
+
+        multimat.subMaterials.push(materiauFace);
+        multimat.subMaterials.push(materiauCote);
+        multimat.subMaterials.push(materiauHaut);
+
+
+
+        this.mesh.material = multimat;
+
+        //assigner des subMeshs aux différentes faces
+        this.mesh.subMeshes = [];
+        const verticesCount = this.mesh.getTotalVertices();
+
+        //haut de la plateforme
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 0, 6, this.mesh));
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, 6, 6, this.mesh));
+
+        //côtés
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(1, 0, verticesCount, 12, 6, this.mesh));
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(1, 0, verticesCount, 18, 6, this.mesh));
+    
+        //faces avant et arrière
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(2, 0, verticesCount, 24, 6, this.mesh));
+        this.mesh.subMeshes.push(new BABYLON.SubMesh(2, 0, verticesCount, 30, 6, this.mesh));
+    
+
         this.mesh.position.set(positionX, positionY, positionZ);
         this.mesh.checkCollisions = true;
         Plateforme.numero++;
     }
 
-    genererUV()
-    {
-        const faceUV = [];
-        faceUV[0] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//arrière 
-        faceUV[1] = new BABYLON.Vector4(0, 0, this.largeur/this.longueur, 1);//avant 
-        faceUV[2] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//droite
-        faceUV[3] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//gauche 
-        faceUV[4] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//haut 
-        faceUV[5] = new BABYLON.Vector4(0, 0, this.longueur/this.largeur, 1);//bas
 
-
-        // for(let i of [2,3,4,5])
-        // {
-        //     faceUV[i] = new BABYLON.Vector4(0, 0, this.largeur/this.hauteur, 1);
-        // }
-
-        return faceUV;
-    }
 
 
 }

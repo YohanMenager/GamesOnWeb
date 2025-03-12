@@ -20,7 +20,7 @@ export function initBabylon() {
      * en particulier pour un jeu de type labyrinthe où les niveaux sont très similaires.
      * @returns {BABYLON.Scene}
      */
-    let createScene = function(){
+    let createScene = async function(){
         let scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3.White();
 
@@ -35,10 +35,9 @@ export function initBabylon() {
         scene.collisionsEnabled = true; // Active la gestion des collisions globalement, utile pour que le joueur ne soit pas à moitié dans les murs en cas de collisions
 
         /*-----------------------------------------------------------------------------joueur-----------------------------------------------------------------------------*/
-        let joueur = new Personnage(1.1, 1.3, scene);
+        let joueur = new Personnage(0.6, 0.7, scene);
+        await joueur.creerJoueur();
         joueur.hitbox.position = chargeur.niveau.positionDepart;
-        console.log(chargeur.niveau.positionDepart);
-        console.log(joueur.hitbox.position);
    
 
 
@@ -86,10 +85,9 @@ export function initBabylon() {
             if (inputMap["q"]) mv.x = -1;
             if (inputMap["d"]) mv.x = 1;
 
-            // mv.y = -1;//si on veut mettre la gravité
+            mv.y = -1;//si on veut mettre la gravité
 
             joueur.seDeplacer(mv);
-            // console.log(joueur.modele.position);
 
             mv.x = 0;
             mv.z = 0;
@@ -110,8 +108,10 @@ export function initBabylon() {
         return scene;
     };
 
-    let scene = createScene();
-    engine.runRenderLoop(() => scene.render());
+    createScene().then((scene) => {
+        engine.runRenderLoop(() => scene.render());
+    });
+    
 }
 
 // if (typeof BABYLON === 'undefined') {
