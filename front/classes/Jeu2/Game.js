@@ -5,6 +5,7 @@ import { rectsOverlap } from "./collisions.js";
 import { initListeners } from "./ecouteurs.js";
 import Sortie from "./Sortie.js";
 import ObjetSpecial from "./ObjetSpecial.js";
+import PowerUp from "./PowerUp.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -12,6 +13,9 @@ export default class Game {
 
     // Initialiser le score du joueur à 0
     score = 0;
+
+    // Ajouter une propriété pour le temps de jeu 
+    tempsRestant = 30; // Temps limite pour chaque niveau en secondes
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -89,6 +93,19 @@ export default class Game {
             } while (rectsOverlap(objetSpecial.x, objetSpecial.y, objetSpecial.w, objetSpecial.h, startZone.x, startZone.y, startZone.w, startZone.h));
             this.objetsGraphiques.push(objetSpecial);
         }
+        
+        // Ajout du power-up avec une probabilité de 30% 
+        if(Math.random() < 0.3) {
+            const powerUp = new PowerUp(
+                Math.random() * this.canvas.width * 0.8,
+                Math.random() * this.canvas.height * 0.8,
+                30,
+                30,
+                "green"
+            );
+            this.objetsGraphiques.push(powerUp);
+        }
+    
     }
 
     resizeCanvas() {
@@ -104,6 +121,15 @@ export default class Game {
             this.resizeCanvas();
             this.init(); // Re-initialize objects on resize
         });
+        
+        // Démarer un intervalle pour réduire le temps de jeu
+        setInterval(() => {
+            this.tempsRestant--;
+            if (this.tempsRestant <= 0) {
+              alert("Temps écoulé ! Vous avez perdu !");  
+              window.location.reload(); // Recharger la page
+            }
+        }, 1000); //Appeler la fonction toutes les secondes
 
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
@@ -138,7 +164,9 @@ export default class Game {
         this.ctx.fillText("Score: " + this.score, 10, 30);
         this.ctx.restore();
         this.objetsGraphiques.forEach(obj => obj.draw(this.ctx));
-
+        
+        // Dessiner le temps restant
+        this.ctx.fillText(`Temps restant: ${this.tempsRestant}s`, 10, 50); // Afficher le temps restant
     }
 
     update() {
@@ -157,6 +185,17 @@ export default class Game {
 
         // On regarde si le joueur a atteint l'objet spécial
         this.testCollisionPlayerObjetSpecial();
+
+        //Effet du power-up sur le joueur
+        this.objetsGraphiques.forEach(obj => {
+            if (obj instanceof PowerUp && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
+            console.log ("Power-up ramassé !"); 
+            //Augmenter la vitesse   
+            this.player.vitesseX += 1.5;
+            this.player.vitesseY += 1.5;
+            this.objetsGraphiques.splice(this.objetsGraphiques.indexOf(obj), 1); // Supprimer le power-up
+            }
+            });
     }
 
     movePlayer() {
