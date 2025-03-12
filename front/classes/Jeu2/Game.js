@@ -10,6 +10,9 @@ export default class Game {
     objetsGraphiques = [];
     niveau = 1;
 
+    // Initialiser le score du joueur à 0
+    score = 0;
+
     constructor(canvas) {
         this.canvas = canvas;
         // etat du clavier
@@ -127,6 +130,15 @@ export default class Game {
         this.objetsGraphiques.forEach(obj => {
             obj.draw(this.ctx);
         });
+
+        // Dessiner le score du joueur
+        this.ctx.save();
+        this.ctx.fillStyle = "black";
+        this.ctx.font = "20px Arial";
+        this.ctx.fillText("Score: " + this.score, 10, 30);
+        this.ctx.restore();
+        this.objetsGraphiques.forEach(obj => obj.draw(this.ctx));
+
     }
 
     update() {
@@ -208,6 +220,9 @@ export default class Game {
         if (this.sortie && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, this.sortie.x, this.sortie.y, this.sortie.w, this.sortie.h)) {
             this.niveau++;
             this.initNiveau(this.niveau);
+            // Augmenter le score du joueur de 100 points
+            this.score += 100;
+            this.initNiveau(this.niveau);
         }
     }
 
@@ -215,6 +230,7 @@ export default class Game {
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof ObjetSpecial) {
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
+                    this.score += 50;
                     this.niveau++;
                     this.initNiveau(this.niveau);
                 }
