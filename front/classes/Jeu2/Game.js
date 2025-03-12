@@ -6,6 +6,7 @@ import { initListeners } from "./ecouteurs.js";
 import Sortie from "./Sortie.js";
 import ObjetSpecial from "./ObjetSpecial.js";
 import PowerUp from "./PowerUp.js";
+import Ennemi from "./Ennemi.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -105,7 +106,12 @@ export default class Game {
             );
             this.objetsGraphiques.push(powerUp);
         }
-    
+        // Réinitialser le temps de jeu pour le niveau
+        this.tempsRestant = 30; // 30 secondes pour chaque niveau
+
+        // Création des ennemis
+        const ennemi = new Ennemi(200, 200, 40, 40, "black",this.canvas);
+        this.objetsGraphiques.push(ennemi);
     }
 
     resizeCanvas() {
@@ -124,11 +130,13 @@ export default class Game {
         
         // Démarer un intervalle pour réduire le temps de jeu
         setInterval(() => {
-            this.tempsRestant--;
-            if (this.tempsRestant <= 0) {
-              alert("Temps écoulé ! Vous avez perdu !");  
-              window.location.reload(); // Recharger la page
+            if (this.tempsRestant > 0) {
+                this.tempsRestant--; // Réduire le temps restant
+            } else {
+                alert("Temps écoulé ! Vous avez perdu !");
+                window.location.reload(); // Recharger la page
             }
+
         }, 1000); //Appeler la fonction toutes les secondes
 
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
@@ -190,12 +198,29 @@ export default class Game {
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof PowerUp && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
             console.log ("Power-up ramassé !"); 
-            //Augmenter la vitesse   
-            this.player.vitesseX += 1.5;
-            this.player.vitesseY += 1.5;
+
+            //Réduire sa largeur de 05% et sa hauteur de 05%
+            this.player.w *= 0.95;
+            this.player.h *= 0.95;
+            
+            // Augmenter le score du joueur de 5 points
+            this.score += 5;
+            
+            // Supprimer le power-up
             this.objetsGraphiques.splice(this.objetsGraphiques.indexOf(obj), 1); // Supprimer le power-up
             }
-            });
+        });
+
+        // Ajout d'un appel à la méthode move() pour les ennemis 
+        this.objetsGraphiques.forEach(obj => {
+            if (obj instanceof Ennemi) {
+                obj.move();
+                if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
+                    alert("Collision avec un ennemi ! Vous avez perdu !");
+                    window.location.reload(); // Recharger la page
+                }
+            }
+        });
     }
 
     movePlayer() {
