@@ -1,3 +1,14 @@
+// Liste des images de fond pour chaque niveau (constante globale)
+const backgrounds = [
+    "../../assets/Jeu2/1.jpg",
+    "../../assets/Jeu2/2.jpg",
+    "../../assets/Jeu2/3.jpg",
+    "../../assets/Jeu2/4.jpg",
+    "../../assets/Jeu2/5.jpg",
+    "../../assets/Jeu2/6.jpg",
+    "../../assets/Jeu2/7.jpg"
+];
+
 import Player from "./Player.js";
 import Obstacle from "./Obstacle.js";
 import ObjetSouris from "./ObjetSouris.js";
@@ -24,13 +35,18 @@ export default class Game {
 
     constructor(canvas) {
         this.canvas = canvas;
-        // etat du clavier
+        // etat du clavier et de la souris
         this.inputStates = {
             mouseX: 0,
             mouseY: 0,
         };
 
-        this.background = ["#ADD8E6", "#FFD700", "#FF6347", "#8A2BE2","#8A2BE2"]
+        // Charger l'image de fond
+        this.backgroundImage = new Image();
+        this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
+
+        // Couleurs de fond en option si les images échouent
+        this.background = ["#ADD8E6", "#FFD700", "#FF6347", "#8A2BE2", "#8A2BE2"];
     }
 
     async init() {
@@ -118,7 +134,11 @@ export default class Game {
         // Création des ennemis
         const ennemi = new Ennemi(200, 200, 40, 40, "black",this.canvas);
         this.objetsGraphiques.push(ennemi);
+        
+        // Changer l'image de fond pour le niveau actuel
+        this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
     }
+
 
     resizeCanvas() {
         this.objetsGraphiques = [];
@@ -166,23 +186,25 @@ export default class Game {
     }
 
     drawAllObjects() {
+        // Dessiner l'image de fond
+        if (this.backgroundImage.complete) {
+            this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            // Couleur de secours si l'image ne charge pas
+            this.ctx.fillStyle = this.background[this.niveau % this.background.length];
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
         // Dessine tous les objets du jeu
         this.objetsGraphiques.forEach(obj => {
             obj.draw(this.ctx);
         });
 
-        // Dessiner le score du joueur
-        this.ctx.save();
+        // Dessiner le score et le temps
         this.ctx.fillStyle = "black";
-        this.ctx.fillStyle = this.background[this.niveau % this.background.length]; // Changer la couleur de fond en fonction du niveau
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height); // Dessiner le fond
         this.ctx.font = "20px Arial";
         this.ctx.fillText("Score: " + this.score, 10, 30);
-        this.ctx.restore();
-        this.objetsGraphiques.forEach(obj => obj.draw(this.ctx));
-        
-        // Dessiner le temps restant
-        this.ctx.fillText(`Temps restant: ${this.tempsRestant}s`, 10, 50); // Afficher le temps restant
+        this.ctx.fillText(`Temps restant: ${this.tempsRestant}s`, 10, 50);
     }
 
     update() {
