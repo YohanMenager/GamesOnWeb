@@ -15,6 +15,9 @@ export default class Game {
 
     // Initialiser le score du joueur à 0
     score = 0;
+    // Initialisation des effets sonores
+    powerUpSound = new Audio("../../sounds/powerUp.wav");
+    levelUpSound = new Audio("../../sounds/levelUp.wav");
 
     // Ajouter une propriété pour le temps de jeu 
     tempsRestant = 30; // Temps limite pour chaque niveau en secondes
@@ -26,6 +29,8 @@ export default class Game {
             mouseX: 0,
             mouseY: 0,
         };
+
+        this.background = ["#ADD8E6", "#FFD700", "#FF6347", "#8A2BE2","#8A2BE2"]
     }
 
     async init() {
@@ -169,6 +174,8 @@ export default class Game {
         // Dessiner le score du joueur
         this.ctx.save();
         this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = this.background[this.niveau % this.background.length]; // Changer la couleur de fond en fonction du niveau
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height); // Dessiner le fond
         this.ctx.font = "20px Arial";
         this.ctx.fillText("Score: " + this.score, 10, 30);
         this.ctx.restore();
@@ -199,6 +206,7 @@ export default class Game {
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof PowerUp && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
             console.log ("Power-up ramassé !"); 
+            this.powerUpSound.play(); // Jouer l'effet sonore du power-up
 
             //Génération de particules
             for (let i = 0; i < 20; i++) {
@@ -211,8 +219,8 @@ export default class Game {
             }
 
             //Réduire sa largeur de 05% et sa hauteur de 05%
-            this.player.w *= 0.95;
-            this.player.h *= 0.95;
+            this.player.w *= 0.9;
+            this.player.h *= 0.9;
             
             // Augmenter le score du joueur de 5 points
             this.score += 5;
@@ -303,6 +311,7 @@ export default class Game {
     testCollisionPlayerSortie() {
         if (this.sortie && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, this.sortie.x, this.sortie.y, this.sortie.w, this.sortie.h)) {
             this.niveau++;
+            this.levelUpSound.play(); // Jouer l'effet sonore du passage au niveau suivant
             this.initNiveau(this.niveau);
             // Augmenter le score du joueur de 100 points
             this.score += 100;
@@ -355,4 +364,5 @@ export default class Game {
             }
         });
     }
+
 }
