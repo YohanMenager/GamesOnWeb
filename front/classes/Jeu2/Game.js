@@ -9,6 +9,25 @@ const backgrounds = [
     "../../assets/Jeu2/7.jpg"
 ];
 
+// Liste de musiques pour chaque thème
+const musics = [
+    "../../assets/Jeu2/1.mp3",
+    "../../assets/Jeu2/2.mp3",
+    "../../assets/Jeu2/3.mp3",
+    "../../assets/Jeu2/4.mp3",
+    "../../assets/Jeu2/5.mp3",
+    "../../assets/Jeu2/6.mp3",
+    "../../assets/Jeu2/7.mp3"
+];
+
+const sounds = {
+    collision: "../../assets/sounds/collision.mp3",
+    powerUp: "../../assets/sounds/powerUp.mp3",
+    levelUp: "../../assets/sounds/levelUp.mp3",
+    victoire: "../../assets/sounds/victoire.mp3"
+};
+
+
 import Player from "./Player.js";
 import Obstacle from "./Obstacle.js";
 import ObjetSouris from "./ObjetSouris.js";
@@ -26,9 +45,6 @@ export default class Game {
 
     // Initialiser le score du joueur à 0
     score = 0;
-    // Initialisation des effets sonores
-    powerUpSound = new Audio("../../sounds/powerUp.wav");
-    levelUpSound = new Audio("../../sounds/levelUp.wav");
 
     // Ajouter une propriété pour le temps de jeu 
     tempsRestant = 30; // Temps limite pour chaque niveau en secondes
@@ -47,7 +63,43 @@ export default class Game {
 
         // Couleurs de fond en option si les images échouent
         this.background = ["#ADD8E6", "#FFD700", "#FF6347", "#8A2BE2", "#8A2BE2"];
+        
+        // Charger la musique de fond
+        this.backgroundMusic = new Audio();
+        this.backgroundMusic.loop = true; // La musique tourne en boucle
+        this.setMusic(); // Initialise la musique selon le niveau
+    
+        // Charger les effets sonores
+        this.collisionSound = new Audio(sounds.collision);
+        this.powerUpSound = new Audio(sounds.powerUp);
+        this.levelUpSound = new Audio(sounds.levelUp);
+        this.victoireSound = new Audio(sounds.victoire);
+    
     }
+
+    // Méthode pour changer la musique de fond selon le niveau
+    setMusic() {
+        this.backgroundMusic.pause(); // Arrêter la musique en cours
+        this.backgroundMusic.src = musics[this.niveau % musics.length];
+        this.backgroundMusic.play(); // Jouer la nouvelle musique
+    }
+
+    //Méthode pour stopper la musique de fond
+    finDeJeu() {
+        if (this.backgroundMusic) {
+            this.backgroundMusic.pause();
+        }
+    }
+
+    // Méthode pour jouer l'effet sonore de collision
+    jouerSonCollision() {
+        this.collisionSound.play(); // Jouer l'effet sonore de collision
+    }
+
+    joueSonVictoire() {
+        this.victoireSound.play(); // Jouer l'effet sonore de victoire
+    }
+
 
     async init() {
         this.ctx = this.canvas.getContext("2d");
@@ -68,6 +120,7 @@ export default class Game {
     }
 
     initNiveau(niveau) {
+
         // Supprimer les anciens obstacles et la sortie
         this.objetsGraphiques = this.objetsGraphiques.filter(obj => !(obj instanceof Obstacle || obj instanceof Sortie || obj instanceof ObjetSpecial));
 
@@ -137,8 +190,10 @@ export default class Game {
         
         // Changer l'image de fond pour le niveau actuel
         this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
+    
+        // Changer la musique de fond pour le niveau actuel
+        this.setMusic();
     }
-
 
     resizeCanvas() {
         this.objetsGraphiques = [];
@@ -159,13 +214,21 @@ export default class Game {
             if (this.tempsRestant > 0) {
                 this.tempsRestant--; // Réduire le temps restant
             } else {
+                this.finDeJeu(); // Fin du jeu en cas de temps écoulé
                 alert("Temps écoulé ! Vous avez perdu !");
                 window.location.reload(); // Recharger la page
             }
-
         }, 1000); //Appeler la fonction toutes les secondes
 
+        // Couper la musique de fond en cours avant de relancer le jeu
+        if (this.backgroundMusic) {
+            this.backgroundMusic.pause();
+            this.backgroundMusic.currentTime = 0;
+        }
+        this.setMusic(); // Jouer la musique de fond du niveau actuel
+    
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
+    
     }
 
     mainAnimationLoop() {
@@ -257,6 +320,7 @@ export default class Game {
             if (obj instanceof Ennemi) {
                 obj.move();
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
+                    this.finDeJeu(); // Fin du jeu en cas de collision avec un ennemi
                     alert("Collision avec un ennemi ! Vous avez perdu !");
                     window.location.reload(); // Recharger la page
                 }
@@ -333,10 +397,10 @@ export default class Game {
     testCollisionPlayerSortie() {
         if (this.sortie && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, this.sortie.x, this.sortie.y, this.sortie.w, this.sortie.h)) {
             this.niveau++;
+            this.joueSonVictoire(); // Jouer l'effet sonore de victoire
             this.levelUpSound.play(); // Jouer l'effet sonore du passage au niveau suivant
             this.initNiveau(this.niveau);
-            // Augmenter le score du joueur de 100 points
-            this.score += 100;
+            this.score += 100; // Augmenter le score de 100 point
             this.initNiveau(this.niveau);
         }
     }
@@ -358,16 +422,10 @@ export default class Game {
             if(obj instanceof Obstacle) {
                 if(rectsOverlap(this.player.x-this.player.w/2, this.player.y - this.player.h/2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
                     // collision
-
-                    // ICI TEST BASIQUE QUI ARRETE LE JOUEUR EN CAS DE COLLIION.
-                    // SI ON VOULAIT FAIRE MIEUX, ON POURRAIT PAR EXEMPLE REGARDER OU EST LE JOUEUR
-                    // PAR RAPPORT A L'obstacle courant : il est à droite si son x est plus grand que le x de l'obstacle + la largeur de l'obstacle
-                    // il est à gauche si son x + sa largeur est plus petit que le x de l'obstacle
-                    // etc.
-                    // Dans ce cas on pourrait savoir comment le joueur est entré en collision avec l'obstacle et réagir en conséquence
-                    // par exemple en le repoussant dans la direction opposée à celle de l'obstacle...
-                    // Là par défaut on le renvoie en x=10 y=10 et on l'arrête
                     console.log("Collision avec obstacle");
+                    this.jouerSonCollision();
+
+                    // on remet le joueur à sa position de départ
                     if (this.player.x < obj.x) {
                         this.player.x = obj.x - this.player.w / 2;
                     } else if (this.player.x > obj.x + obj.w) {
