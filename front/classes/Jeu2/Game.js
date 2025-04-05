@@ -1,30 +1,30 @@
 // Liste des images de fond pour chaque niveau (constante globale)
 const backgrounds = [
-    "../../assets/Jeu2/1.jpg",
-    "../../assets/Jeu2/2.jpg",
-    "../../assets/Jeu2/3.jpg",
-    "../../assets/Jeu2/4.jpg",
-    "../../assets/Jeu2/5.jpg",
-    "../../assets/Jeu2/6.jpg",
-    "../../assets/Jeu2/7.jpg"
+    "../../assets/Jeu2/backgrounds/1.jpg",
+    "../../assets/Jeu2/backgrounds/2.jpg",
+    "../../assets/Jeu2/backgrounds/3.jpg",
+    "../../assets/Jeu2/backgrounds/4.jpg",
+    "../../assets/Jeu2/backgrounds/5.jpg",
+    "../../assets/Jeu2/backgrounds/6.jpg",
+    "../../assets/Jeu2/backgrounds/7.jpg"
 ];
 
 // Liste de musiques pour chaque thème
 const musics = [
-    "../../assets/Jeu2/1.mp3",
-    "../../assets/Jeu2/2.mp3",
-    "../../assets/Jeu2/3.mp3",
-    "../../assets/Jeu2/4.mp3",
-    "../../assets/Jeu2/5.mp3",
-    "../../assets/Jeu2/6.mp3",
-    "../../assets/Jeu2/7.mp3"
+    "../../assets/Jeu2/musics/1.mp3",
+    "../../assets/Jeu2/musics/2.mp3",
+    "../../assets/Jeu2/musics/3.mp3",
+    "../../assets/Jeu2/musics/4.mp3",
+    "../../assets/Jeu2/musics/5.mp3",
+    "../../assets/Jeu2/musics/6.mp3",
+    "../../assets/Jeu2/musics/7.mp3"
 ];
 
 const sounds = {
-    collision: "../../assets/sounds/collision.mp3",
-    powerUp: "../../assets/sounds/powerUp.mp3",
-    levelUp: "../../assets/sounds/levelUp.mp3",
-    victoire: "../../assets/sounds/victoire.mp3"
+    collision: "../../assets/Jeu2/sounds/collision.mp3",
+    powerUp: "../../assets/Jeu2/sounds/powerUp.mp3",
+    levelUp: "../../assets/Jeu2/sounds/levelUp.mp3",
+    victoire: "../../assets/Jeu2/sounds/victoire.mp3"
 };
 
 
@@ -96,7 +96,7 @@ export default class Game {
         this.collisionSound.play(); // Jouer l'effet sonore de collision
     }
 
-    joueSonVictoire() {
+    jouerSonVictoire() {
         this.victoireSound.play(); // Jouer l'effet sonore de victoire
     }
 
@@ -320,6 +320,7 @@ export default class Game {
             if (obj instanceof Ennemi) {
                 obj.move();
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
+                    this.jouerSonCollision(); // Jouer l'effet sonore de collision
                     this.finDeJeu(); // Fin du jeu en cas de collision avec un ennemi
                     alert("Collision avec un ennemi ! Vous avez perdu !");
                     window.location.reload(); // Recharger la page
@@ -396,9 +397,8 @@ export default class Game {
 
     testCollisionPlayerSortie() {
         if (this.sortie && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, this.sortie.x, this.sortie.y, this.sortie.w, this.sortie.h)) {
-            this.niveau++;
-            this.joueSonVictoire(); // Jouer l'effet sonore de victoire
             this.levelUpSound.play(); // Jouer l'effet sonore du passage au niveau suivant
+            this.niveau++;
             this.initNiveau(this.niveau);
             this.score += 100; // Augmenter le score de 100 point
             this.initNiveau(this.niveau);
@@ -423,8 +423,7 @@ export default class Game {
                 if(rectsOverlap(this.player.x-this.player.w/2, this.player.y - this.player.h/2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
                     // collision
                     console.log("Collision avec obstacle");
-                    this.jouerSonCollision();
-
+                    
                     // on remet le joueur à sa position de départ
                     if (this.player.x < obj.x) {
                         this.player.x = obj.x - this.player.w / 2;
