@@ -53,8 +53,8 @@ export class Plateforme
         if(texture != null)
         {
             materiauHaut.diffuseTexture = new BABYLON.Texture(texture, scene);
-            materiauHaut.diffuseTexture.uScale = longueur/10; // Nombre de répétitions en largeur
-            materiauHaut.diffuseTexture.vScale = largeur/10; // Nombre de répétitions en hauteur
+            materiauHaut.diffuseTexture.uScale = longueur/20; // Nombre de répétitions en largeur
+            materiauHaut.diffuseTexture.vScale = largeur/20; // Nombre de répétitions en hauteur
 
         }
         else{
@@ -81,8 +81,8 @@ export class Plateforme
         if(normalMap != null)
         {
             materiauHaut.bumpTexture = new BABYLON.Texture(normalMap, scene);  
-            materiauHaut.bumpTexture.uScale =  longueur/10; // Nombre de répétitions en longueur
-            materiauHaut.bumpTexture.vScale =  largeur/10; // Nombre de répétitions en largeur
+            materiauHaut.bumpTexture.uScale =  longueur/20; // Nombre de répétitions en longueur
+            materiauHaut.bumpTexture.vScale =  largeur/20; // Nombre de répétitions en largeur
             materiauHaut.bumpTexture.level = relief; // Augmente l'effet de relief
 
 
@@ -91,13 +91,13 @@ export class Plateforme
         if(normalMapCote != null)
         {
             materiauCote.bumpTexture = new BABYLON.Texture(normalMap, scene);  
-            materiauCote.bumpTexture.uScale =  longueur/5; // Nombre de répétitions en largeur
-            materiauCote.bumpTexture.vScale =  hauteur/5; // Nombre de répétitions en hauteur
+            materiauCote.bumpTexture.uScale =  longueur/10; // Nombre de répétitions en largeur
+            materiauCote.bumpTexture.vScale =  hauteur/10; // Nombre de répétitions en hauteur
             materiauCote.bumpTexture.level = relief; // Augmente l'effet de relief    
             
             materiauFace.bumpTexture = new BABYLON.Texture(normalMap, scene);  
-            materiauFace.bumpTexture.uScale =  largeur/5; // Nombre de répétitions en longueur
-            materiauFace.bumpTexture.vScale =  hauteur/5; // Nombre de répétitions en hauteur
+            materiauFace.bumpTexture.uScale =  largeur/10; // Nombre de répétitions en longueur
+            materiauFace.bumpTexture.vScale =  hauteur/10; // Nombre de répétitions en hauteur
             materiauFace.bumpTexture.level = relief; // Augmente l'effet de relief                  
         }
 
@@ -128,10 +128,22 @@ export class Plateforme
 
         this.mesh.position.set(positionX, positionY, positionZ);
         this.mesh.checkCollisions = true;
+
         Plateforme.numero++;
+        
     }
 
-
-
+    dispose()
+    {
+        this.mesh.dispose();
+    }
+    
+    createInstance(name, x, y, z) {
+        let instance = this.mesh.createInstance(name);
+        instance.checkCollisions = this.mesh.checkCollisions;
+        instance.metadata = this.mesh.metadata;
+        instance.position = new BABYLON.Vector3(x, y, z);
+        return instance;
+    }
 
 }

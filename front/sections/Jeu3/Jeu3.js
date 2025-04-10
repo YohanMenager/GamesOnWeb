@@ -1,4 +1,4 @@
-import { Personnage } from "/classes/Jeu3/Personnage.js";
+
 import { ChargeurDreamz } from "/classes/Jeu3/ChargeurDreamz.js";
 import { MenuDreamz } from "/classes/Jeu3/MenuDreamz.js";
 
@@ -24,23 +24,17 @@ export function initBabylon() {
         let scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3.White();
 
+        scene.collisionsEnabled = true; // Active la gestion des collisions globalement, utile pour que le joueur ne soit pas à moitié dans les murs en cas de collisions
+
+        // scene.gravity = new BABYLON.Vector3(0, -0.5, 0); // Gravité pour les collisions
         /*-----------------------------------------------------------------------------chargement-----------------------------------------------------------------------------*/
 
         const chargeur = new ChargeurDreamz(scene);
-        const menu = new MenuDreamz(chargeur, 1);
-        menu.afficherMenu();
-        menu.demarrerNiveau(1);
-
-        
-        scene.collisionsEnabled = true; // Active la gestion des collisions globalement, utile pour que le joueur ne soit pas à moitié dans les murs en cas de collisions
-
-        /*-----------------------------------------------------------------------------joueur-----------------------------------------------------------------------------*/
-        let joueur = new Personnage(0.6, 0.7, scene);
-        await joueur.creerJoueur();
-        joueur.hitbox.position = chargeur.niveau.positionDepart;
-   
 
 
+
+        const menu = new MenuDreamz(chargeur);
+        await menu.afficherMenu();
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
 
@@ -62,47 +56,103 @@ export function initBabylon() {
         //j'utilise une caméra arcrotate pour pouvoir tourner autour du joueur
         //j'utilise un arcrotate car je veux que la caméra soit toujours à la même hauteur,
         //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
-        let camera = new BABYLON.ArcRotateCamera("arcCamera", -Math.PI/2, Math.PI / 6, 50, joueur.hitbox.position, scene);
-        camera.attachControl(canvas, true);//pour faire des tests
-        /*-----------------------------------------------------------------------------clavier-----------------------------------------------------------------------------*/
-
-        let inputMap = {};
-        scene.actionManager = new BABYLON.ActionManager(scene);
-
-        scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnKeyDownTrigger, evt => inputMap[evt.sourceEvent.key] = true
-        ));
-
-        scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnKeyUpTrigger, evt => inputMap[evt.sourceEvent.key] = false
-        ));
-
-        let mv = new BABYLON.Vector3(0, 0, 0);
-        scene.onBeforeRenderObservable.add(() => {
-            
-            if (inputMap["z"]) mv.z = 1;
-            if (inputMap["s"]) mv.z = -1;
-            if (inputMap["q"]) mv.x = -1;
-            if (inputMap["d"]) mv.x = 1;
-
-            mv.y = -1;//si on veut mettre la gravité
-
-            joueur.seDeplacer(mv);
-
-            mv.x = 0;
-            mv.z = 0;
-
-            if(!(inputMap["z"] || inputMap["s"] || inputMap["q"] || inputMap["d"])) {
-                joueur.vitesse = 0.1;
-            }
-
-        });
-
+        let camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 6, 50, chargeur.joueur.hitbox.position, scene);
+        // camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
+       
 
         /*-----------------------------------------------------------------------------lumière-----------------------------------------------------------------------------*/
-        let lumiere = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+        let lumiere = new BABYLON.HemisphericLight("lumiere", new BABYLON.Vector3(0, 1, 0), scene);
         // lumiere.diffuse = new BABYLON.Color3(0.9, 0.9, 0.9);
         lumiere.intensity = 0.7;
+
+
+         /*-----------------------------------------------------------------------------collisions-----------------------------------------------------------------------------*/
+         chargeur.joueur.hitbox.onCollideObservable.add((otherMesh) => {
+            if(otherMesh.metadata?.type=="Sortie")
+            {
+                console.log("Niveau terminé !");
+                chargeur.hud.cacher();
+                menu.niveauTermine(chargeur.niveau.getNumero());
+                camera.target = chargeur.joueur.hitbox.position;
+                camera.alpha = -Math.PI/2;
+                camera.beta = Math.PI / 6;
+                camera.radius = 50;
+            }
+            if (otherMesh.metadata?.type === "Ennemi")
+            {
+                chargeur.mort();
+            }
+    });
+
+    
+
+
+    /*-----------------------------------------------------------------------------événements à chaque frame-----------------------------------------------------------------------------*/
+        
+    scene.onBeforeRenderObservable.add(() => {
+        
+        /*-------------------------------------------------------------------vérifier si la sortie peut être activée-------------------------------------------------------------------*/
+        let nbBonusRequis = 0;
+        let sortie = null
+        for(const objet of chargeur.niveau.objets)
+        {
+            if(objet.requis)
+            {
+                nbBonusRequis++;
+            }
+            else if((objet.nom == "Sortie"))
+            {
+                sortie = objet;
+            }
+        }
+        if(sortie)
+        {
+            if(nbBonusRequis == 0)
+            {
+                sortie.activerSortie()
+            }
+            else
+            {
+                sortie.desactiverSortie()
+            }
+        }
+        chargeur.hud.setNbCleTrouve(chargeur.niveau.nbCle - nbBonusRequis, chargeur.niveau.nbCle);
+
+
+        /*-------------------------------------------------------------------éviter la chute-------------------------------------------------------------------*/
+        if(chargeur.joueur.hitbox.position.y < -100)
+            {
+                chargeur.mort();
+            }    
+        /*-------------------------------------------------------------------comportement ennemis-------------------------------------------------------------------*/
+    
+        for (const ennemi of chargeur.niveau.ennemis) {
+            if (ennemi.mesh) {
+                //trouver la direction du joueur
+                const direction = directionJoueur(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+                let distance = distance2D(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+                //si le joueur est à moins de 40 unités de l'ennemi, il se déplace vers lui
+                if (distance < 40) {
+                    // ennemi.hitbox.moveWithCollisions(direction.normalize().scaleInPlace(-0.05));
+                    ennemi.seDeplacer(direction.normalize());
+                }
+                else
+                {
+                    if(ennemi.walk && ennemi.idle)
+                    {
+                        ennemi.walk.stop();
+                        ennemi.idle.start(true);
+                    }
+                }
+
+                
+                
+            }
+        }
+    });
+
+
+
 
 
         return scene;
@@ -112,6 +162,14 @@ export function initBabylon() {
         engine.runRenderLoop(() => scene.render());
     });
     
+}
+
+function distance2D(p1, p2) {
+    return Math.sqrt((p1.x - p2.x) ** 2 + (p1.z - p2.z) ** 2);
+}
+
+function directionJoueur(joueur, ennemi) {
+    return new BABYLON.Vector3(joueur.x - ennemi.x, 0, joueur.z - ennemi.z);
 }
 
 // if (typeof BABYLON === 'undefined') {

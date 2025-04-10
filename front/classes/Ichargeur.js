@@ -1,5 +1,5 @@
 export class Ichargeur {
-    charger(modele, position)
+    charger(mesh, position)
     {
         throw new Error("la méthode charger() doit être implémentée");
     }

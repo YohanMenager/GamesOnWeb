@@ -1,21 +1,36 @@
 import { Ichargeur } from '../Ichargeur.js';
 import { lvl_1 } from './Niveaux/lvl_1.js';
 import { lvl_2 } from './Niveaux/lvl_2.js';
+import { lvl_3 } from './Niveaux/lvl_3.js';
 import { zoneTest } from './Niveaux/zoneTest.js';
+import { Personnage } from "./Personnage.js";
+import { HUD } from './HUD.js';
 
 export class ChargeurDreamz extends Ichargeur {
     scene;
     niveau;
+    joueur;
+    hud;
     constructor(scene) {
         super();
         this.scene = scene;
+        this.hud = new HUD(scene);
+
     }
 
-    chargerNiveau(niveau) {
+    async initJoueur() {
+        this.joueur = new Personnage(0.6, 0.7, new BABYLON.Vector3(0, 0, 0), this.scene);
+        await this.joueur.init();
+    }
+
+    async chargerNiveau(niveau) {
+        this.hud.reset(niveau);
+        
+        // console.log(`entrée méthode chargerNiveau`);
         //effacer le niveau d'avant pour éviter les fuites de mémoire
         //si la méthode est appelée pour la première fois, on évite les erreurs en vérifiant si le niveau existe
         if (this.niveau) {
-            this.niveau.dispose();
+            this.niveau.supprimer();
         }
         switch (niveau) {
             case -1:
@@ -23,9 +38,15 @@ export class ChargeurDreamz extends Ichargeur {
                 break;
             case 1:
                 this.niveau = new lvl_1(this.scene);
+                console.log("Niveau 1");
                 break;
             case 2:
                 this.niveau = new lvl_2(this.scene);
+                console.log("Niveau 2");
+                break;
+            case 3:
+                this.niveau = new lvl_3(this.scene);
+                console.log("Niveau 3");
                 break;
             // Ajouter d'autres niveaux ici
             default:
@@ -33,5 +54,43 @@ export class ChargeurDreamz extends Ichargeur {
                 this.niveau = null;
                 break;
         }
+        if(this.niveau)
+        {
+            this.joueur.hitbox.position = this.niveau.positionDepart;
+            for (const ennemi of this.niveau.ennemis) 
+                {
+                    // console.log(ennemi);
+                    await ennemi.init();
+                    // await ennemi.init();
+                    ennemi.hitbox.onCollideObservable.add((otherMesh) => {
+                        if (otherMesh.metadata?.type === "Joueur")
+                        {
+                            this.mort();
+                        }
+                    });
+                    
+                }
+            for (const objet of this.niveau.objets)
+            {
+                if (objet.nomModele != null) {
+                    setTimeout(async () => {
+                        await objet.init();
+                    }, 0);
+                }
+            }
+        }
+        this.hud.afficher();
+
+    }
+
+    mort()
+    {
+        console.log("Mort du joueur !");
+        this.chargerNiveau(this.niveau.getNumero());
+        let camera = this.scene.activeCamera;
+        camera.target = this.joueur.hitbox.position;
+        camera.alpha = -Math.PI/2;
+        camera.beta = Math.PI / 6;
+        camera.radius = 50;
     }
 }
