@@ -11,11 +11,13 @@ export class ChargeurDreamz extends Ichargeur {
     niveau;
     joueur;
     hud;
+    nbNiveaux = 3; // Nombre total de niveaux disponibles
     constructor(scene) {
         super();
         this.scene = scene;
         this.hud = new HUD(scene);
-
+        this.hud.cacher();
+        
     }
 
     async initJoueur() {
@@ -57,6 +59,15 @@ export class ChargeurDreamz extends Ichargeur {
         if(this.niveau)
         {
             this.joueur.hitbox.position = this.niveau.positionDepart;
+
+            if(this.camera)
+                {
+                    this.camera = this.scene.activeCamera;
+                    this.camera.target = this.joueur.hitbox.position;
+                    this.camera.alpha = -Math.PI/2;
+                    this.camera.beta = Math.PI / 6;
+                    this.camera.radius = 50;                    
+                }
             for (const ennemi of this.niveau.ennemis) 
                 {
                     // console.log(ennemi);
@@ -87,10 +98,10 @@ export class ChargeurDreamz extends Ichargeur {
     {
         console.log("Mort du joueur !");
         this.chargerNiveau(this.niveau.getNumero());
-        let camera = this.scene.activeCamera;
-        camera.target = this.joueur.hitbox.position;
-        camera.alpha = -Math.PI/2;
-        camera.beta = Math.PI / 6;
-        camera.radius = 50;
+        this.camera = this.scene.activeCamera;
+        this.camera.target = this.joueur.hitbox.position;
+        this.camera.alpha = -Math.PI/2;
+        this.camera.beta = Math.PI / 6;
+        this.camera.radius = 50;
     }
 }

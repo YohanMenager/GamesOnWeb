@@ -1,6 +1,9 @@
 import { IHUD } from "../IHUD.js";
 
 export class HUD extends IHUD {
+
+    menu;
+    ui;
     /**
      * * Crée l'interface utilisateur
      */
@@ -29,14 +32,20 @@ export class HUD extends IHUD {
         this.boutonMenu.textBlock.color = "white";
         this.boutonMenu.textBlock.fontSize = 25;
         this.boutonMenu.onPointerClickObservable.add(() => {
-            // TODO : gestion du menu
-            console.log("Menu clicked");
+            if(this.menu.isVisible) {
+                this.menu.cacher();
+                this.afficher();
+            }
+            else {
+                this.menu.afficherMenu();
+                this.cacher();
+            }
         });
         this.ui.addControl(this.boutonMenu);
 
 
         // Label du niveau au centre en haut
-        this.labelNiveau = new BABYLON.GUI.TextBlock("labelNiveau", "Niveau 1");
+        this.labelNiveau = new BABYLON.GUI.TextBlock("labelNiveau", "");
         this.labelNiveau.color = "white";
         this.labelNiveau.fontSize = 25;
         this.labelNiveau.height = "50px";
@@ -49,35 +58,35 @@ export class HUD extends IHUD {
 
 
         //label score en haut à gauche
-        this.score = new BABYLON.GUI.TextBlock("labelScore", "Score : 0");
+        this.score = new BABYLON.GUI.TextBlock("labelScore", "");
         this.score.height = "30px";
         this.score.color = "white";
         this.score.fontSize = 25;
 
         //label temps en dessous du score
-        this.timer = new BABYLON.GUI.TextBlock("labelTemps", "00:00");
+        this.timer = new BABYLON.GUI.TextBlock("labelTemps", "");
         this.timer.height = "30px";
         this.timer.color = "white";
         this.timer.fontSize = 25;
 
         //label clés à trouver, en dessous du temps
-        this.labelCle = new BABYLON.GUI.TextBlock("labelCle", "Clés : 0/0");
+        this.labelCle = new BABYLON.GUI.TextBlock("labelCle", "");
         this.labelCle.height = "30px";
         this.labelCle.color = "white";
         this.labelCle.fontSize = 25;
 
-        const panneauGauche = new BABYLON.GUI.StackPanel();
-        panneauGauche.width = "300px";
-        panneauGauche.isVertical = true;
-        panneauGauche.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        panneauGauche.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        panneauGauche.paddingTop = "30px";
-        panneauGauche.paddingLeft = "10px";
-        panneauGauche.addControl(this.score);
-        panneauGauche.addControl(this.timer);
-        panneauGauche.addControl(this.labelCle);
+        this.panneauGauche = new BABYLON.GUI.StackPanel();
+        this.panneauGauche.width = "300px";
+        this.panneauGauche.isVertical = true;
+        this.panneauGauche.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        this.panneauGauche.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        this.panneauGauche.paddingTop = "30px";
+        this.panneauGauche.paddingLeft = "10px";
+        this.panneauGauche.addControl(this.score);
+        this.panneauGauche.addControl(this.timer);
+        this.panneauGauche.addControl(this.labelCle);
 
-        this.ui.addControl(panneauGauche);
+        this.ui.addControl(this.panneauGauche);
 
 
     }
@@ -108,9 +117,15 @@ export class HUD extends IHUD {
 
     cacher() {
         this.ui.isVisible = false;
+        this.boutonMenu.isVisible = false;
+        this.labelNiveau.isVisible = false;
+        this.panneauGauche.isVisible = false;
     }
     afficher() {
         this.ui.isVisible = true;
+        this.boutonMenu.isVisible = true;
+        this.labelNiveau.isVisible = true;
+        this.panneauGauche.isVisible = true;
     }
     setNiveau(niveau) {
         this.labelNiveau.text = "Niveau " + niveau;
@@ -135,5 +150,6 @@ export class HUD extends IHUD {
         this.setNbCleTrouve(0, 0);
         this.setNiveau(niveau);
     }
+
 
 }

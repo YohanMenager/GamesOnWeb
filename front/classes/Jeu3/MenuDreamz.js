@@ -8,24 +8,106 @@ export class MenuDreamz extends Imenu{
         super(chargeur);
         this.niveauxDebloques = niveauxDebloques;
     }
-    async afficherMenu()
+
+    async init()
     {
-        console.log("Affichage du menu...");
-        for (let i = 1; i <= this.niveauxDebloques; i++) {
-            console.log(`Niveau ${i} disponible`);
-        }
-        if(!this.chargeur.joueur)
+        console.log("Initialisation du menu...");
+        this.ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("menu", true, this.chargeur.scene);
+        this.menuContainer = new BABYLON.GUI.StackPanel("menuContainer");
+        this.menuContainer.isVertical = true;
+        this.menuContainer.width = "1000px";
+        this.menuContainer.height = "90%";
+        this.menuContainer.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        this.menuContainer.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+
+        this.menuContainer.background = "rgb(30,30,30)";
+        // this.menuContainer.alpha = 0.5;
+        this.menuContainer.zIndex = 1;
+        this.menuContainer.thickness = 0;
+
+        const boutonFermer = BABYLON.GUI.Button.CreateSimpleButton("fermer", "Fermer le menu");
+        boutonFermer.width = "150px";
+        boutonFermer.height = "50px";
+        boutonFermer.color = "white";
+        boutonFermer.background = "black";
+        boutonFermer.fontSize = 25;
+        boutonFermer.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        boutonFermer.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        this.menuContainer.addControl(boutonFermer);
+        boutonFermer.onPointerClickObservable.add(() => {
+            this.cacherMenu();
+            this.chargeur.hud.afficher();
+        })
+
+        for(let i = 0; i < this.chargeur.nbNiveaux; i++)
         {
-            await this.chargeur.initJoueur();
+            const boutonNiveau = BABYLON.GUI.Button.CreateSimpleButton(`niveau${i}`, `Niveau ${i+1}`);
+            boutonNiveau.width = "150px";
+            boutonNiveau.height = "50px";
+            boutonNiveau.color = "black";
+            boutonNiveau.fontSize = 25;
+            boutonNiveau.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+            boutonNiveau.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            boutonNiveau.top = `${(i+1)*60}px`;
+            boutonNiveau.left = "-10px";
+            boutonNiveau.paddingLeft = "10px";
+            boutonNiveau.paddingTop = "10px";
+            boutonNiveau.paddingRight = "10px";
+            boutonNiveau.paddingBottom = "10px";
+            boutonNiveau.textBlock.color = "black";
+            boutonNiveau.textBlock.fontSize = 25;
+            
+            if(i+1 <= this.niveauxDebloques)
+            {
+                boutonNiveau.background = "yellow";
+                boutonNiveau.onPointerClickObservable.add(() => {
+                    this.demarrerNiveau(i+1);
+                });
+            }
+            else
+            {
+                boutonNiveau.background = "gray";
+                boutonNiveau.alpha = 0.5;
+                boutonNiveau.isHitTestVisible = false;
+            }
+            this.menuContainer.addControl(boutonNiveau);
+            this.menuContainer.isVisible = false; // Le menu est caché au début
+            this.ui.addControl(this.menuContainer);
         }
-        // await this.demarrerNiveau(-1);//pour utiliser la zone de test
-        await this.demarrerNiveau(this.niveauxDebloques);//temporaire jusqu'à qu'il y ait un menu
+        
+        if(!this.chargeur.joueur)
+            {
+                await this.chargeur.initJoueur();
+            }
+        this.afficherMenu();
     }
+
+    afficherMenu()
+    {
+        this.ui.isVisible = true;
+        this.menuContainer.isVisible = true;
+        // console.log("Affichage du menu...");
+        // for (let i = 1; i <= this.niveauxDebloques; i++) {
+        //     console.log(`Niveau ${i} disponible`);
+        // }
+        // await this.demarrerNiveau(-1);//pour utiliser la zone de test
+        // await this.demarrerNiveau(this.niveauxDebloques);//temporaire jusqu'à qu'il y ait un menu
+    }
+
+    cacherMenu()
+    {
+        this.ui.isVisible = false;
+        this.menuContainer.isVisible = false;
+        // console.log("Cacher le menu...");
+    }
+
     async demarrerNiveau(niveau)
     {
         // console.log(`entrée méthode demarrerNiveau`);
         if (niveau <= this.niveauxDebloques) {
             console.log(`Chargement du niveau ${niveau}...`);
+            this.cacherMenu();
+            console.log(this.ui.isVisible);
             await this.chargeur.chargerNiveau(niveau);
         } else {
             console.log(`Niveau ${niveau} non débloqué !`);
@@ -36,6 +118,18 @@ export class MenuDreamz extends Imenu{
         console.log("Niveau terminé !");
         if(numero==this.niveauxDebloques)
         {
+            for(let bouton of this.menuContainer.children)
+            {
+                if(bouton.name == `niveau${numero}`)
+                {
+                    bouton.background = "yellow";
+                    bouton.alpha = 1;
+                    bouton.isHitTestVisible = true;
+                    bouton.onPointerClickObservable.add(() => {
+                        this.demarrerNiveau(numero+1);
+                    });
+                }
+            }
             this.niveauxDebloques++;
         }
         this.afficherMenu();

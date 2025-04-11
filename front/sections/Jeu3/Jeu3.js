@@ -34,7 +34,8 @@ export function initBabylon() {
 
 
         const menu = new MenuDreamz(chargeur);
-        await menu.afficherMenu();
+        await menu.init();
+        chargeur.hud.menu = menu;
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
 
@@ -57,6 +58,7 @@ export function initBabylon() {
         //j'utilise un arcrotate car je veux que la caméra soit toujours à la même hauteur,
         //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
         let camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 6, 50, chargeur.joueur.hitbox.position, scene);
+        chargeur.camera = camera;
         // camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
        
 
@@ -73,10 +75,6 @@ export function initBabylon() {
                 console.log("Niveau terminé !");
                 chargeur.hud.cacher();
                 menu.niveauTermine(chargeur.niveau.getNumero());
-                camera.target = chargeur.joueur.hitbox.position;
-                camera.alpha = -Math.PI/2;
-                camera.beta = Math.PI / 6;
-                camera.radius = 50;
             }
             if (otherMesh.metadata?.type === "Ennemi")
             {
@@ -91,64 +89,68 @@ export function initBabylon() {
         
     scene.onBeforeRenderObservable.add(() => {
         
-        /*-------------------------------------------------------------------vérifier si la sortie peut être activée-------------------------------------------------------------------*/
-        let nbBonusRequis = 0;
-        let sortie = null
-        for(const objet of chargeur.niveau.objets)
+        if(chargeur.niveau)
         {
-            if(objet.requis)
+            /*-------------------------------------------------------------------vérifier si la sortie peut être activée-------------------------------------------------------------------*/
+            let nbBonusRequis = 0;
+            let sortie = null
+            for(const objet of chargeur.niveau.objets)
             {
-                nbBonusRequis++;
+                if(objet.requis)
+                {
+                    nbBonusRequis++;
+                }
+                else if((objet.nom == "Sortie"))
+                {
+                    sortie = objet;
+                }
             }
-            else if((objet.nom == "Sortie"))
+            if(sortie)
             {
-                sortie = objet;
-            }
-        }
-        if(sortie)
-        {
-            if(nbBonusRequis == 0)
-            {
-                sortie.activerSortie()
-            }
-            else
-            {
-                sortie.desactiverSortie()
-            }
-        }
-        chargeur.hud.setNbCleTrouve(chargeur.niveau.nbCle - nbBonusRequis, chargeur.niveau.nbCle);
-
-
-        /*-------------------------------------------------------------------éviter la chute-------------------------------------------------------------------*/
-        if(chargeur.joueur.hitbox.position.y < -100)
-            {
-                chargeur.mort();
-            }    
-        /*-------------------------------------------------------------------comportement ennemis-------------------------------------------------------------------*/
-    
-        for (const ennemi of chargeur.niveau.ennemis) {
-            if (ennemi.mesh) {
-                //trouver la direction du joueur
-                const direction = directionJoueur(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
-                let distance = distance2D(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
-                //si le joueur est à moins de 40 unités de l'ennemi, il se déplace vers lui
-                if (distance < 40) {
-                    // ennemi.hitbox.moveWithCollisions(direction.normalize().scaleInPlace(-0.05));
-                    ennemi.seDeplacer(direction.normalize());
+                if(nbBonusRequis == 0)
+                {
+                    sortie.activerSortie()
                 }
                 else
                 {
-                    if(ennemi.walk && ennemi.idle)
-                    {
-                        ennemi.walk.stop();
-                        ennemi.idle.start(true);
-                    }
+                    sortie.desactiverSortie()
                 }
-
-                
-                
             }
+            chargeur.hud.setNbCleTrouve(chargeur.niveau.nbCle - nbBonusRequis, chargeur.niveau.nbCle);
+
+
+            /*-------------------------------------------------------------------éviter la chute-------------------------------------------------------------------*/
+            if(chargeur.joueur.hitbox.position.y < -100)
+                {
+                    chargeur.mort();
+                }    
+            /*-------------------------------------------------------------------comportement ennemis-------------------------------------------------------------------*/
+        
+            for (const ennemi of chargeur.niveau.ennemis) {
+                if (ennemi.mesh) {
+                    //trouver la direction du joueur
+                    const direction = directionJoueur(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+                    let distance = distance2D(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+                    //si le joueur est à moins de 40 unités de l'ennemi, il se déplace vers lui
+                    if (distance < 40) {
+                        // ennemi.hitbox.moveWithCollisions(direction.normalize().scaleInPlace(-0.05));
+                        ennemi.seDeplacer(direction.normalize());
+                    }
+                    else
+                    {
+                        if(ennemi.walk && ennemi.idle)
+                        {
+                            ennemi.walk.stop();
+                            ennemi.idle.start(true);
+                        }
+                    }
+
+                    
+                    
+                }
+            }            
         }
+ 
     });
 
 
