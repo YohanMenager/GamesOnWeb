@@ -18,7 +18,7 @@ export class Plateforme
      * @param {*} scene scène où afficher la plateforme
      * @param {*} relief hauteur du relief pour la normalMap
      */
-    constructor(largeur, longueur, hauteur, positionX, positionY, positionZ, texture, textureCote, normalMap, normalMapCote, scene, relief, opacity)
+    constructor(largeur, longueur, hauteur, positionX, positionY, positionZ, texture, textureCote, normalMap, normalMapCote, scene, relief, opacity, defilement = false)
     {
         //debug
         // console.log("plateforme numéro ", Plateforme.numero)
@@ -29,6 +29,8 @@ export class Plateforme
 
         this.largeur = largeur;
         this.longueur = longueur;
+
+        this.scene = scene;
 
        
 
@@ -101,6 +103,22 @@ export class Plateforme
             materiauFace.bumpTexture.level = relief; // Augmente l'effet de relief                  
         }
 
+
+        if(defilement)
+        {
+            materiauHaut.diffuseTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            materiauHaut.diffuseTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+            
+            materiauFace.diffuseTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+            materiauFace.diffuseTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+            this.scene.onBeforeRenderObservable.add(() => {
+                this.mesh.material.subMaterials[0].diffuseTexture.uOffset -= 0.02;
+                this.mesh.material.subMaterials[2].diffuseTexture.vOffset += 0.01;
+            });
+        }
+
+
+
         multimat.subMaterials.push(materiauFace);
         multimat.subMaterials.push(materiauCote);
         multimat.subMaterials.push(materiauHaut);
@@ -145,5 +163,6 @@ export class Plateforme
         instance.position = new BABYLON.Vector3(x, y, z);
         return instance;
     }
+
 
 }

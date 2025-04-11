@@ -11,7 +11,7 @@ export class Personnage extends Entite {
      * @param {*} scene scène où se trouve le joueur
      */
 
-
+    peutMarcher = false;
 
     constructor(vitesse, vitesseMax, position, scene) {
         super(vitesse, vitesseMax, "Joueur", position, scene, true, "urotsuki.glb", 5);
@@ -32,22 +32,25 @@ export class Personnage extends Entite {
 
         let mv = new BABYLON.Vector3(0, 0, 0);
         scene.onBeforeRenderObservable.add(() => {
-            
-            if (inputMap["z"] || inputMap["Z"] ) mv.z = 1;
-            if (inputMap["s"] || inputMap["S"] ) mv.z = -1;
-            if (inputMap["q"] || inputMap["Q"] ) mv.x = -1;
-            if (inputMap["d"] || inputMap["D"] ) mv.x = 1;
-            // if (inputMap["a"]) mv.y = -1;//pour faire des tests
-            // if (inputMap["e"]) mv.y = 1;//pour faire des tests
+            if (this.peutMarcher) {
+                if (inputMap["z"] || inputMap["Z"] ) mv.z = 1;
+                if (inputMap["s"] || inputMap["S"] ) mv.z = -1;
+                if (inputMap["q"] || inputMap["Q"] ) mv.x = -1;
+                if (inputMap["d"] || inputMap["D"] ) mv.x = 1;
+                // if (inputMap["a"]) mv.y = -1;//pour faire des tests
+                // if (inputMap["e"]) mv.y = 1;//pour faire des tests
 
 
-            this.seDeplacer(mv);
-            mv.x = 0;
-            mv.z = 0;
+                this.seDeplacer(mv);
+                mv.x = 0;
+                mv.z = 0;
 
-            if(!(inputMap["z"] || inputMap["s"] || inputMap["q"] || inputMap["d"])) {
-                this.vitesse = 0.1;
+                if(!(inputMap["z"] || inputMap["s"] || inputMap["q"] || inputMap["d"])) {
+                    this.vitesse = 0.1;
+                }
             }
+            
+
 
         });
 

@@ -3,6 +3,7 @@ import { lvl_1 } from './Niveaux/lvl_1.js';
 import { lvl_2 } from './Niveaux/lvl_2.js';
 import { lvl_3 } from './Niveaux/lvl_3.js';
 import { zoneTest } from './Niveaux/zoneTest.js';
+import { Accueil } from './Niveaux/Accueil.js';
 import { Personnage } from "./Personnage.js";
 import { HUD } from './HUD.js';
 
@@ -38,6 +39,9 @@ export class ChargeurDreamz extends Ichargeur {
             case -1:
                 this.niveau = new zoneTest(this.scene);
                 break;
+            case 0:
+                this.niveau = new Accueil(this.scene);
+                break;
             case 1:
                 this.niveau = new lvl_1(this.scene);
                 console.log("Niveau 1");
@@ -53,21 +57,45 @@ export class ChargeurDreamz extends Ichargeur {
             // Ajouter d'autres niveaux ici
             default:
                 console.error("Niveau non reconnu !");
-                this.niveau = null;
+                this.niveau = new Accueil(this.scene);
                 break;
         }
         if(this.niveau)
         {
             this.joueur.hitbox.position = this.niveau.positionDepart;
 
-            if(this.camera)
-                {
-                    this.camera = this.scene.activeCamera;
-                    this.camera.target = this.joueur.hitbox.position;
-                    this.camera.alpha = -Math.PI/2;
-                    this.camera.beta = Math.PI / 6;
-                    this.camera.radius = 50;                    
-                }
+            if(this.niveau.getNumero() == 0)
+            {
+                this.hud.cacher();
+                this.joueur.peutMarcher = false;                
+                
+                this.joueur.walk.start(true);
+                this.joueur.idle.stop();
+                
+                //faire tourner le joueur de 90 degrés
+                this.joueur.mesh.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, -1, 0), Math.PI/2);
+                
+                this.camera = this.scene.activeCamera;
+                this.camera.target = this.joueur.hitbox.position;
+                this.camera.alpha = 5*Math.PI/4;
+                this.camera.beta = Math.PI/4;
+                this.camera.radius = 25; 
+            }
+            else
+            {
+                this.hud.afficher();
+                this.joueur.peutMarcher = true;
+
+                this.joueur.idle.start(true);
+                this.joueur.walk.stop();
+                
+                this.camera = this.scene.activeCamera;
+                this.camera.target = this.joueur.hitbox.position;
+                this.camera.alpha = -Math.PI/2;
+                this.camera.beta = Math.PI/6;
+                this.camera.radius = 50;        
+            }
+
             for (const ennemi of this.niveau.ennemis) 
                 {
                     // console.log(ennemi);
@@ -90,7 +118,6 @@ export class ChargeurDreamz extends Ichargeur {
                 }
             }
         }
-        this.hud.afficher();
 
     }
 

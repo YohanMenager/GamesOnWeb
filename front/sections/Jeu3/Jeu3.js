@@ -36,6 +36,7 @@ export function initBabylon() {
         const menu = new MenuDreamz(chargeur);
         await menu.init();
         chargeur.hud.menu = menu;
+        menu.demarrerNiveau(0);
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
 
@@ -57,8 +58,8 @@ export function initBabylon() {
         //j'utilise une caméra arcrotate pour pouvoir tourner autour du joueur
         //j'utilise un arcrotate car je veux que la caméra soit toujours à la même hauteur,
         //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
-        let camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 6, 50, chargeur.joueur.hitbox.position, scene);
-        chargeur.camera = camera;
+        let camera = new BABYLON.ArcRotateCamera("Camera", 5*Math.PI/4, Math.PI/4, 25, chargeur.joueur.hitbox.position, scene);
+        // chargeur.camera = camera;
         // camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
        
 

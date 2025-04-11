@@ -36,8 +36,31 @@ export class MenuDreamz extends Imenu{
         this.menuContainer.addControl(boutonFermer);
         boutonFermer.onPointerClickObservable.add(() => {
             this.cacherMenu();
-            this.chargeur.hud.afficher();
+            // this.chargeur.hud.afficher();
         })
+
+        const boutonAccueil = BABYLON.GUI.Button.CreateSimpleButton("accueil", "Accueil");
+
+        boutonAccueil.width = "150px";
+        boutonAccueil.height = "50px";
+        boutonAccueil.color = "black";
+        boutonAccueil.fontSize = 25;
+        boutonAccueil.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        boutonAccueil.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        boutonAccueil.top = `${(0)*60}px`;
+        boutonAccueil.left = "-10px";
+        boutonAccueil.paddingLeft = "10px";
+        boutonAccueil.paddingTop = "10px";
+        boutonAccueil.paddingRight = "10px";
+        boutonAccueil.paddingBottom = "10px";
+        boutonAccueil.textBlock.color = "black";
+        boutonAccueil.textBlock.fontSize = 25;
+        
+            boutonAccueil.background = "yellow";
+            boutonAccueil.onPointerClickObservable.add(() => {
+                this.demarrerNiveau(0);
+            });
+        this.menuContainer.addControl(boutonAccueil);
 
         for(let i = 0; i < this.chargeur.nbNiveaux; i++)
         {
@@ -79,7 +102,8 @@ export class MenuDreamz extends Imenu{
             {
                 await this.chargeur.initJoueur();
             }
-        this.afficherMenu();
+        // this.afficherMenu();
+        // this.demarrerNiveau(0);
     }
 
     afficherMenu()
@@ -107,7 +131,6 @@ export class MenuDreamz extends Imenu{
         if (niveau <= this.niveauxDebloques) {
             console.log(`Chargement du niveau ${niveau}...`);
             this.cacherMenu();
-            console.log(this.ui.isVisible);
             await this.chargeur.chargerNiveau(niveau);
         } else {
             console.log(`Niveau ${niveau} non débloqué !`);

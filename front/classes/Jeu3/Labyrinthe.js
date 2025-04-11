@@ -61,14 +61,6 @@ export class Labyrinthe extends INiveau
         return this.#numero;
     }
     
-    afficher()
-    {
-        console.log("Labyrinthe affiché");
-    }
-    verifier()
-    {
-        console.log("Labyrinthe vérifié");
-    }
 
     supprimer()
     {

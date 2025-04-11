@@ -117,7 +117,7 @@ export class HUD extends IHUD {
 
     cacher() {
         this.ui.isVisible = false;
-        this.boutonMenu.isVisible = false;
+        // this.boutonMenu.isVisible = false;
         this.labelNiveau.isVisible = false;
         this.panneauGauche.isVisible = false;
     }

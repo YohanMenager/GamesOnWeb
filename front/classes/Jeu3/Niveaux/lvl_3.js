@@ -82,12 +82,4 @@ export class lvl_3 extends Labyrinthe
         this.genererLabyrinthe(labyrinthe);
         
     }
-    afficher()
-    {
-        console.log("Labyrinthe affiché");
-    }
-    verifier()
-    {
-        console.log("Labyrinthe vérifié");
-    }
 }

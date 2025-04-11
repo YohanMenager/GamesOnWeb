@@ -6,7 +6,7 @@ export class zoneTest extends Labyrinthe
 {
     constructor(scene)
     {
-        super([new Cauchemar(0.5, 0.6, "squelette", new BABYLON.Vector3(-60, 5, -50), scene, "skeleton.glb", 0.05)], //sortie
+        super([new Cauchemar(0.5, 0.6, "squelette", new BABYLON.Vector3(-60, 5, -50), scene, "skeleton.glb", 0.05)], 
             [new Bonus({nom: "Sortie", position: new BABYLON.Vector3(60, 5, -20), scene: scene}),
                 new Bonus({nom: "Points", position: new BABYLON.Vector3(50, 5, -20), scene: scene, points: 10}),
                 new Bonus({nom: "Cle", position: new BABYLON.Vector3(60, 5, -10), scene: scene, nomModele: "cle.glb", scale: 0.15, requis: true, points: 100}),], 
@@ -30,13 +30,5 @@ export class zoneTest extends Labyrinthe
 
 
         
-    }
-    afficher()
-    {
-        console.log("Labyrinthe affiché");
-    }
-    verifier()
-    {
-        console.log("Labyrinthe vérifié");
     }
 }
