@@ -89,6 +89,7 @@ export default class Game {
     
         // Charger les effets sonores
         this.collisionSound = new Audio(sounds.collision);
+        console.log("Chargement du son de collision :", this.collisionSound.src);
         this.powerUpSound = new Audio(sounds.powerUp);
         this.levelUpSound = new Audio(sounds.levelUp);
         this.victoireSound = new Audio(sounds.victoire);
@@ -115,7 +116,13 @@ export default class Game {
 
     // Méthode pour jouer l'effet sonore de collision
     jouerSonCollision() {
-        this.collisionSound.play(); // Jouer l'effet sonore de collision
+        this.collisionSound.pause(); // Met en pause si le son était en cours
+        this.collisionSound.currentTime = 0; // Remet le son au début
+        this.collisionSound.volume = 1.0; // Assure que le volume est bien actif
+    
+        this.collisionSound.play().catch(error => {
+            console.warn("Lecture du son de collision bloquée :", error);
+        });
     }
 
     jouerSonVictoire() {
@@ -134,6 +141,10 @@ export default class Game {
         this.objetsGraphiques.push(this.objetSouris);
 
         this.initNiveau(this.niveau);
+
+        this.collisionSound.addEventListener("canplaythrough", () => {
+            console.log("Son de collision prêt à être joué !");
+        });
 
         // On initialise les écouteurs de touches, souris, etc.
         initListeners(this.inputStates, this.canvas);
@@ -343,9 +354,12 @@ export default class Game {
                 obj.move();
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
                     this.jouerSonCollision(); // Jouer l'effet sonore de collision
-                    this.finDeJeu(); // Fin du jeu en cas de collision avec un ennemi
-                    alert("Collision avec un ennemi ! Vous avez perdu !");
-                    window.location.reload(); // Recharger la page
+                    
+                    setTimeout(() => { // Attendre avant d'afficher l'alerte 
+                        alert("Collision avec un ennemi ! Vous avez perdu !"); 
+                        this.finDeJeu(); 
+                        window.location.reload(); 
+                    }, 200); 
                 }
             }
         });

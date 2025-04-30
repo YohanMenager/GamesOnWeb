@@ -1,5 +1,5 @@
-/*Classe des ennemis, avec un déplacement autonome e
-t rebond sur les bords.*/
+/*Classe des ennemis, avec un déplacement autonome et 
+rebond sur les bords.*/
 
 import ObjectGraphique from "./ObjectGraphique.js";
 
