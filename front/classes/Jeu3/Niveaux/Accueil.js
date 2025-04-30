@@ -7,7 +7,7 @@ export class Accueil extends Labyrinthe
         super([],
             [], 
             [         
-                new Plateforme(300, 20, 10, 0, -5, 0, "/assets/textures/grass.jpg", "/assets/textures/ground.jpg", null, null, scene,  null, 1, true),
+                new Plateforme(300, 15, 10, 0, -5, 0, "/assets/textures/grass.jpg", "/assets/textures/ground.jpg", null, null, scene,  null, 1, true),
                 ],
                 new BABYLON.Vector3(0, 5, 0),//point de départ
                 scene,

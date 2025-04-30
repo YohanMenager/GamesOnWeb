@@ -1,4 +1,6 @@
 import {Imenu} from "../Imenu.js";
+import {GestionPoints} from "../GestionPoints.js";
+import {Timer} from "../Timer.js";
 
 export class MenuDreamz extends Imenu{
     niveauxDebloques = 0;
@@ -35,8 +37,13 @@ export class MenuDreamz extends Imenu{
         boutonFermer.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         this.menuContainer.addControl(boutonFermer);
         boutonFermer.onPointerClickObservable.add(() => {
+            Timer.setVitesse(1);
             this.cacherMenu();
-            // this.chargeur.hud.afficher();
+            if(this.chargeur.niveau.getNumero() != 0)
+            {
+                this.chargeur.hud.afficher();
+            }
+            
         })
 
         const boutonAccueil = BABYLON.GUI.Button.CreateSimpleButton("accueil", "Accueil");
@@ -80,9 +87,16 @@ export class MenuDreamz extends Imenu{
             boutonNiveau.textBlock.color = "black";
             boutonNiveau.textBlock.fontSize = 25;
             
-            if(i+1 <= this.niveauxDebloques)
+            if(i+1 < this.niveauxDebloques)
             {
                 boutonNiveau.background = "yellow";
+                boutonNiveau.onPointerClickObservable.add(() => {
+                    this.demarrerNiveau(i+1);
+                });
+            }
+            else if(i+1 == this.niveauxDebloques)
+            {
+                boutonNiveau.background = "blue";
                 boutonNiveau.onPointerClickObservable.add(() => {
                     this.demarrerNiveau(i+1);
                 });
@@ -139,19 +153,41 @@ export class MenuDreamz extends Imenu{
     niveauTermine(numero)
     {
         console.log("Niveau terminé !");
+        Timer.setVitesse(0);
+        this.chargeur.hud.cacher();
+        //gestion des points
+        let pointsGagnes = this.chargeur.niveau.calculerScoreNiveau();
+        console.log(`Points gagnés : ${pointsGagnes}`);
+        console.log('ancien score :', GestionPoints.getPointsParJeu(3)[numero]);
+        if(pointsGagnes > GestionPoints.getPointsParJeu(3)[numero])
+        {
+            GestionPoints.setPointsNiveau(3, numero, pointsGagnes);
+            console.log(`Nouveau score pour le niveau ${numero} : ${pointsGagnes}`);
+        }
+
+        //pour gérer si on débloque le niveau suivant ou pas
         if(numero==this.niveauxDebloques)
         {
             for(let bouton of this.menuContainer.children)
             {
                 if(bouton.name == `niveau${numero}`)
                 {
-                    bouton.background = "yellow";
+                    bouton.background = "blue";
                     bouton.alpha = 1;
                     bouton.isHitTestVisible = true;
                     bouton.onPointerClickObservable.add(() => {
                         this.demarrerNiveau(numero+1);
                     });
                 }
+                if(bouton.name == `niveau${numero-1}`)
+                    {
+                        bouton.background = "yellow";
+                        // bouton.alpha = 1;
+                        // bouton.isHitTestVisible = true;
+                        // bouton.onPointerClickObservable.add(() => {
+                        //     this.demarrerNiveau(numero+1);
+                        // });
+                    }
             }
             this.niveauxDebloques++;
         }

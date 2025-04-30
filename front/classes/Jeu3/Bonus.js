@@ -34,12 +34,10 @@ export class Bonus extends Entite
             case "Sortie":
                 this.mesh = this.creerSortie();
                 this.genererHitbox();
-                this.ajouterCollisions();
                 break;
             case "Points":
                 this.mesh = this.creerBonusP();
                 this.genererHitbox();
-                this.ajouterCollisions();
                 break;
             // case "Cle":
             //     this.init();
@@ -149,10 +147,3 @@ export class Bonus extends Entite
     }
 
 }
-
-/*
-devoir récupérer des bonus pour pouvoir finir le niveau et/ou gagner des points
--> sortie désactivée tant que tous les bonus ne sont pas récupérés
-     est-ce que c'est possible de faire en sorte que si toutes les instances de bonus sont détruites ou activées, on active la sortie ?
-sortie une classe héritée de bonus ?
-*/

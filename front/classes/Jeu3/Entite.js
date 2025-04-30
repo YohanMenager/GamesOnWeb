@@ -1,4 +1,5 @@
 import { IEntite } from "../IEntite.js";
+import { Timer } from "../Timer.js";
 
 export class Entite extends IEntite
 {
@@ -29,12 +30,6 @@ export class Entite extends IEntite
     {
         
         await this.creerModele(this.nomModele, this.scale);
-        this.ajouterCollisions();
-    }
-
-    ajouterCollisions()
-    {
-        return null;//implémenté dans les classes filles
     }
 
     genererHitbox()
@@ -83,7 +78,6 @@ export class Entite extends IEntite
      * @param {*} mv vecteur de déplacement
      */
     seDeplacer(mv) {
-
         if(mv.x == 0 && mv.z == 0 && this.walk && this.idle) {
             this.walk.stop();
             this.idle.start(true);
@@ -102,7 +96,7 @@ export class Entite extends IEntite
 
 
         //le joueur se déplace, en ne passant pas à travers les murs. on multiplie par la vitesse
-        this.hitbox.moveWithCollisions(new BABYLON.Vector3(mv.x * this.vitesse, mv.y, mv.z * this.vitesse));
+        this.hitbox.moveWithCollisions(new BABYLON.Vector3(mv.x * this.vitesse*Timer.getVitesse(), mv.y*Timer.getVitesse(), mv.z * this.vitesse*Timer.getVitesse()));
 
         // Synchronisation du modèle avec la hitbox, sinon la hitbox bouge toute seule
         this.mesh.position.copyFrom(this.hitbox.position);

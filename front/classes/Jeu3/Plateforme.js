@@ -112,8 +112,8 @@ export class Plateforme
             materiauFace.diffuseTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
             materiauFace.diffuseTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
             this.scene.onBeforeRenderObservable.add(() => {
-                this.mesh.material.subMaterials[0].diffuseTexture.uOffset -= 0.02;
-                this.mesh.material.subMaterials[2].diffuseTexture.vOffset += 0.01;
+                this.mesh.material.subMaterials[0].diffuseTexture.uOffset -= 0.01;
+                this.mesh.material.subMaterials[2].diffuseTexture.vOffset += 0.005;
             });
         }
 

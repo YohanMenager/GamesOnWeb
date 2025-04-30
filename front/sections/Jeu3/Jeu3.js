@@ -1,6 +1,7 @@
-
 import { ChargeurDreamz } from "/classes/Jeu3/ChargeurDreamz.js";
 import { MenuDreamz } from "/classes/Jeu3/MenuDreamz.js";
+import { Timer } from '/classes/Timer.js';
+import { GestionPoints } from "../../classes/GestionPoints.js";
 
 let engine = null;
 let scene = null;
@@ -69,12 +70,23 @@ export function initBabylon() {
         lumiere.intensity = 0.7;
 
 
+        
+                              
+       
+
          /*-----------------------------------------------------------------------------collisions-----------------------------------------------------------------------------*/
          chargeur.joueur.hitbox.onCollideObservable.add((otherMesh) => {
+            if(otherMesh.metadata?.instance?.constructor.name == "Bonus")
+            {
+                GestionPoints.ajouterPoints(otherMesh.metadata.instance.points);
+                if(otherMesh.metadata?.type != "Sortie") {
+                    otherMesh.metadata.instance.dispose()
+                }
+            }
             if(otherMesh.metadata?.type=="Sortie")
             {
-                console.log("Niveau terminé !");
-                chargeur.hud.cacher();
+                
+                otherMesh.metadata.instance.desactiverSortie();
                 menu.niveauTermine(chargeur.niveau.getNumero());
             }
             if (otherMesh.metadata?.type === "Ennemi")
@@ -89,7 +101,11 @@ export function initBabylon() {
     /*-----------------------------------------------------------------------------événements à chaque frame-----------------------------------------------------------------------------*/
         
     scene.onBeforeRenderObservable.add(() => {
-        
+        if(chargeur.hud)
+        {
+            chargeur.hud.setTemps(Timer.getFormattedTimeWithHours());
+            chargeur.hud.setScore(GestionPoints.getPoints());
+        }
         if(chargeur.niveau)
         {
             /*-------------------------------------------------------------------vérifier si la sortie peut être activée-------------------------------------------------------------------*/

@@ -6,6 +6,8 @@ import { zoneTest } from './Niveaux/zoneTest.js';
 import { Accueil } from './Niveaux/Accueil.js';
 import { Personnage } from "./Personnage.js";
 import { HUD } from './HUD.js';
+import { Timer } from '../Timer.js';
+import { GestionPoints } from '../GestionPoints.js';
 
 export class ChargeurDreamz extends Ichargeur {
     scene;
@@ -27,6 +29,8 @@ export class ChargeurDreamz extends Ichargeur {
     }
 
     async chargerNiveau(niveau) {
+        Timer.stopTimer();
+        GestionPoints.resetPoints();
         this.hud.reset(niveau);
         
         // console.log(`entrée méthode chargerNiveau`);
@@ -118,7 +122,9 @@ export class ChargeurDreamz extends Ichargeur {
                 }
             }
         }
+        Timer.startTimer();
 
+        Timer.setVitesse(1);
     }
 
     mort()

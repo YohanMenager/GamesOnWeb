@@ -1,4 +1,5 @@
 import { IHUD } from "../IHUD.js";
+import { Timer } from "../Timer.js";
 
 export class HUD extends IHUD {
 
@@ -33,10 +34,12 @@ export class HUD extends IHUD {
         this.boutonMenu.textBlock.fontSize = 25;
         this.boutonMenu.onPointerClickObservable.add(() => {
             if(this.menu.isVisible) {
+                Timer.setVitesse(1);
                 this.menu.cacher();
                 this.afficher();
             }
             else {
+                Timer.setVitesse(0);
                 this.menu.afficherMenu();
                 this.cacher();
             }
@@ -87,7 +90,7 @@ export class HUD extends IHUD {
         this.panneauGauche.addControl(this.labelCle);
 
         this.ui.addControl(this.panneauGauche);
-
+        this.ui.zIndex = 1; // Assurez-vous que l'UI est au-dessus de tout le reste
 
     }
 

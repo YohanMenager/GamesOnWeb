@@ -28,7 +28,9 @@ export class lvl_3 extends Labyrinthe
                 ],
                 new BABYLON.Vector3(440, 5, -820),//point de départ
                 scene,
-            3);
+            3,
+        1000,
+        1200);
                 
         
 

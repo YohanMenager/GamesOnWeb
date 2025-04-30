@@ -15,9 +15,9 @@ export class Labyrinthe extends INiveau
      * @param {*} decor liste des objets de décor
      * @param {*} positionDepart position de départ du joueur
      */
-    constructor(ennemis, objets, decor, positionDepart, scene, numero)
+    constructor(ennemis, objets, decor, positionDepart, scene, numero, tempsMax, pointsNiveau = 0)
     {
-        super(ennemis, objets);
+        super(ennemis, objets, tempsMax, pointsNiveau);
         this.decor = decor;
         this.positionDepart = positionDepart;
         this.scene = scene
@@ -80,4 +80,6 @@ export class Labyrinthe extends INiveau
         this.ennemis = [];
         this.decor = [];
     }
+
+
 }
