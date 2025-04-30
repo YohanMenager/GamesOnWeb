@@ -1,3 +1,5 @@
+/*Objet bonus qui augmente le score et le niveau. */
+
 import ObjectGraphique from "./ObjectGraphique.js";
 
 export default class ObjetSpecial extends ObjectGraphique {

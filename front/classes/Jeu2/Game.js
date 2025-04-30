@@ -1,3 +1,8 @@
+/*Le cœur du jeu. Il gère les niveaux, les collisions, 
+les déplacements du joueur, les ennemis, les power-ups et l'affichage du score.
+*/
+
+
 // Liste des images de fond pour chaque niveau (constante globale)
 const backgrounds = [
     "../../assets/Jeu2/backgrounds/1.jpg",
@@ -66,6 +71,19 @@ export default class Game {
         
         // Charger la musique de fond
         this.backgroundMusic = new Audio();
+        // Demander la lecture de la musique au clic
+        document.addEventListener("click", () => {
+            if (this.backgroundMusic.paused) {
+                this.backgroundMusic.play().catch(error => console.error("Erreur lecture audio :", error));
+            }
+        });
+
+        document.addEventListener("keydown", () => {
+            if (this.backgroundMusic.paused) {
+                this.backgroundMusic.play().catch(error => console.error("Erreur lecture audio :", error));
+            }
+        });
+
         this.backgroundMusic.loop = true; // La musique tourne en boucle
         this.setMusic(); // Initialise la musique selon le niveau
     
@@ -81,7 +99,11 @@ export default class Game {
     setMusic() {
         this.backgroundMusic.pause(); // Arrêter la musique en cours
         this.backgroundMusic.src = musics[this.niveau % musics.length];
-        this.backgroundMusic.play(); // Jouer la nouvelle musique
+        console.log("Lecture de la musique:", this.backgroundMusic.src);
+    
+        this.backgroundMusic.play().catch(error => {
+            console.warn("Lecture bloquée. Attente d’une interaction utilisateur.");
+        });
     }
 
     //Méthode pour stopper la musique de fond

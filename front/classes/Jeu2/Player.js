@@ -1,3 +1,4 @@
+/*Classe du joueur, avec gestion du mouvement et dessin d’un monstre. */
 import ObjectGraphique from "./ObjectGraphique.js";
 import { drawCircleImmediat } from "./utils.js";   
 

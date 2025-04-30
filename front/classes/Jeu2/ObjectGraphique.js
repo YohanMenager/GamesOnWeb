@@ -1,3 +1,7 @@
+/*Classe de base dont tous les objets héritent (x, y, w, h, couleur).
+*/
+
+
 export default class ObjectGraphique {
     constructor(x, y, w, h, couleur) {
         this.x = x;

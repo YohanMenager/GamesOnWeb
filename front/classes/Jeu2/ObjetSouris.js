@@ -1,3 +1,5 @@
+/* Objet qui suit le mouvement de la souris. */
+
 import ObjectGraphique from "./ObjectGraphique.js";
 
 export default class ObjetSouris extends ObjectGraphique {

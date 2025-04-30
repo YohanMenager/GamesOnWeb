@@ -1,3 +1,7 @@
+/*Capture les entrées clavier et souris (keydown, keyup, mousemove) 
+et met à jour inputStates.
+*/
+
 function initListeners(inputStates, canvas) {
     window.onkeydown = (event) => {
         console.log("Touche pressée : " + event.key);

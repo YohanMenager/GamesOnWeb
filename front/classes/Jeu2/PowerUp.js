@@ -1,3 +1,5 @@
+/*Objet améliorant les capacités du joueur (ex. réduction de taille).*/
+
 import ObjectGraphique from "./ObjectGraphique.js";
 
 export default class PowerUp extends ObjectGraphique {

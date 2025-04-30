@@ -1,3 +1,6 @@
+/*Classe pour générer des particules lors d’événements 
+(ex. ramassage de power-up). */
+
 export default class Particle {
     constructor(x, y, couleur, taille, vitesseX, vitesseY) {
         this.x = x;

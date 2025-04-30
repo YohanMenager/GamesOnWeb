@@ -1,3 +1,7 @@
+/*Contient des fonctions graphiques comme drawCircleImmediat() pour dessiner des cercles et drawGrid() pour une grille.
+ */
+
+
 function drawCircleImmediat(ctx, x, y, r, color) {
     // BONNE PRATIQUE : on sauvegarde le contexte
     // des qu'une fonction ou un bout de code le modifie

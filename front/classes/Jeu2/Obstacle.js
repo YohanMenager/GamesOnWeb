@@ -1,3 +1,5 @@
+/*Classe des obstacles statiques qui bloquent le joueur. */
+
 import ObjectGraphique from "./ObjectGraphique.js";
 
 export default class Obstacle extends ObjectGraphique {

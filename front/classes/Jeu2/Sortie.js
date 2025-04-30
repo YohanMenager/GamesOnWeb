@@ -1,3 +1,5 @@
+/*Objectif à atteindre pour passer au niveau suivant.*/
+
 import ObjectGraphique from "./ObjectGraphique.js";
 
 export default class Sortie extends ObjectGraphique {

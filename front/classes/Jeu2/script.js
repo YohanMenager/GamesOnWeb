@@ -1,3 +1,5 @@
+/*Gère l'initialisation du jeu (window.onload), ajuste la taille du canvas, et démarre Game.js.
+*/
 import Game from "./Game.js";
 
 // Bonne pratique : avoir une fonction appelée une fois
