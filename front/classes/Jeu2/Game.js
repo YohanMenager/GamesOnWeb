@@ -259,9 +259,7 @@ export default class Game {
             this.backgroundMusic.currentTime = 0;
         }
         this.setMusic(); // Jouer la musique de fond du niveau actuel
-    
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
-    
     }
 
     mainAnimationLoop() {
@@ -353,9 +351,8 @@ export default class Game {
             if (obj instanceof Ennemi) {
                 obj.move();
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
-                    this.jouerSonCollision(); // Jouer l'effet sonore de collision
-                    
-                    setTimeout(() => { // Attendre avant d'afficher l'alerte 
+                    this.jouerSonCollision(); // Jouer l'effet sonore de collision                    
+                    setTimeout(() => { 
                         alert("Collision avec un ennemi ! Vous avez perdu !"); 
                         this.finDeJeu(); 
                         window.location.reload(); 
