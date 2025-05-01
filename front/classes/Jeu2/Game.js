@@ -2,7 +2,6 @@
 les déplacements du joueur, les ennemis, les power-ups et l'affichage du score.
 */
 
-
 // Liste des images de fond pour chaque niveau (constante globale)
 const backgrounds = [
     "../../assets/Jeu2/backgrounds/1.jpg",
@@ -434,6 +433,12 @@ export default class Game {
             this.niveau++;
             this.initNiveau(this.niveau);
             this.score += 100; // Augmenter le score de 100 point
+            if (this.niveau > 7) {
+                this.jouerSonVictoire();
+                alert("Bravo, vous avez gagné !");
+                this.finDeJeu();
+                return;
+            }            
             this.initNiveau(this.niveau);
         }
     }
