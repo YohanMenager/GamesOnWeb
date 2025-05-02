@@ -53,8 +53,15 @@ export default class Game {
     // Ajouter une propriété pour le temps de jeu 
     tempsRestant = 30; // Temps limite pour chaque niveau en secondes
 
-    constructor(canvas) {
+    constructor(canvas,{ ecranInterface, messageInterface, btnDemarrer, boutonsFin }) {
         this.canvas = canvas;
+        this.ecranInterface = ecranInterface;
+        this.messageInterface = messageInterface;
+        this.btnDemarrer = btnDemarrer;
+        this.boutonsFin = boutonsFin;
+
+        // Gestion de l'état du jeu
+        this.encours = false ;
         // etat du clavier et de la souris
         this.inputStates = {
             mouseX: 0,
@@ -63,7 +70,7 @@ export default class Game {
 
         // Charger l'image de fond
         this.backgroundImage = new Image();
-        this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
+        this.backgroundImage.src = backgrounds[(this.niveau - 1) % backgrounds.length];
 
         // Couleurs de fond en option si les images échouent
         this.background = ["#ADD8E6", "#FFD700", "#FF6347", "#8A2BE2", "#8A2BE2"];
@@ -72,13 +79,13 @@ export default class Game {
         this.backgroundMusic = new Audio();
         // Demander la lecture de la musique au clic
         document.addEventListener("click", () => {
-            if (this.backgroundMusic.paused) {
+            if (this.encours && this.backgroundMusic.paused) {
                 this.backgroundMusic.play().catch(error => console.error("Erreur lecture audio :", error));
             }
         });
 
         document.addEventListener("keydown", () => {
-            if (this.backgroundMusic.paused) {
+            if (this.encours && this.backgroundMusic.paused) {
                 this.backgroundMusic.play().catch(error => console.error("Erreur lecture audio :", error));
             }
         });
@@ -123,6 +130,22 @@ export default class Game {
             console.warn("Lecture du son de collision bloquée :", error);
         });
     }
+
+    // Méthode pour gérer l'écran de fin de jeu
+    afficherEcranFin(message) {
+        this.messageInterface.textContent = message;
+        this.btnDemarrer.style.display = "none";
+        this.boutonsFin.style.display = "flex";
+        this.ecranInterface.style.display = "flex";
+        this.enCours = false;
+        this.finDeJeu(); 
+
+        if (this.intervalTemps) {
+            clearInterval(this.intervalTemps);
+        }
+    }
+    
+    
 
     jouerSonVictoire() {
         this.victoireSound.play(); // Jouer l'effet sonore de victoire
@@ -234,6 +257,9 @@ export default class Game {
     }
 
     start() {
+        if (this.enCours) return; 
+        this.enCours = true;
+
         console.log("Game démarré");
 
         window.addEventListener('resize', () => {
@@ -241,27 +267,24 @@ export default class Game {
             this.init(); // Re-initialize objects on resize
         });
         
-        // Démarer un intervalle pour réduire le temps de jeu
-        setInterval(() => {
-            if (this.tempsRestant > 0) {
-                this.tempsRestant--; // Réduire le temps restant
-            } else {
-                this.finDeJeu(); // Fin du jeu en cas de temps écoulé
-                alert("Temps écoulé ! Vous avez perdu !");
-                window.location.reload(); // Recharger la page
-            }
-        }, 1000); //Appeler la fonction toutes les secondes
+        this.tempsRestant = 30;
 
-        // Couper la musique de fond en cours avant de relancer le jeu
-        if (this.backgroundMusic) {
-            this.backgroundMusic.pause();
-            this.backgroundMusic.currentTime = 0;
-        }
-        this.setMusic(); // Jouer la musique de fond du niveau actuel
+        this.setMusic();
+
+        this.intervalTemps = setInterval(() => {
+            if (!this.enCours) return;
+            if (this.tempsRestant > 0) {
+               this.tempsRestant--;
+            } else {
+            this.afficherEcranFin("⏰ Temps écoulé ! Vous avez perdu !");
+            }
+        }, 1000);
+
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
     mainAnimationLoop() {
+        if (!this.enCours) return;
         // 1 - on efface le canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -350,11 +373,9 @@ export default class Game {
             if (obj instanceof Ennemi) {
                 obj.move();
                 if (rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
-                    this.jouerSonCollision(); // Jouer l'effet sonore de collision                    
+                    this.jouerSonCollision(); 
                     setTimeout(() => { 
-                        alert("Collision avec un ennemi ! Vous avez perdu !"); 
-                        this.finDeJeu(); 
-                        window.location.reload(); 
+                        this.afficherEcranFin("Collision avec un ennemi ! Vous avez perdu !"); 
                     }, 200); 
                 }
             }
@@ -435,8 +456,7 @@ export default class Game {
             this.score += 100; // Augmenter le score de 100 point
             if (this.niveau > 7) {
                 this.jouerSonVictoire();
-                alert("Bravo, vous avez gagné !");
-                this.finDeJeu();
+                this.afficherEcranFin("🎉 Bravo, vous avez gagné !");
                 return;
             }            
             this.initNiveau(this.niveau);
