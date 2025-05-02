@@ -55,6 +55,8 @@ export default class Game {
 
     constructor(canvas,{ ecranInterface, messageInterface, btnDemarrer, boutonsFin }) {
         this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
+
         this.ecranInterface = ecranInterface;
         this.messageInterface = messageInterface;
         this.btnDemarrer = btnDemarrer;
@@ -155,6 +157,8 @@ export default class Game {
     async init() {
         this.ctx = this.canvas.getContext("2d");
 
+        this.drawAllObjects();
+
         this.player = new Player(this.canvas.width * 0.1, this.canvas.height * 0.1);
         this.objetsGraphiques.push(this.player);
 
@@ -247,7 +251,7 @@ export default class Game {
         this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
     
         // Changer la musique de fond pour le niveau actuel
-        this.setMusic();
+        //this.setMusic();
     }
 
     resizeCanvas() {

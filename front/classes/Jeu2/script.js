@@ -36,6 +36,16 @@ async function init() {
     // Initial resize
      // Initial resize
      resizeCanvas();
+
+     function loopBeforeStart() {
+        if (!game.enCours) {
+            game.drawAllObjects();
+            requestAnimationFrame(loopBeforeStart);
+        }
+    }
+    loopBeforeStart();
+
+
     }
     
     function resizeCanvas() {
