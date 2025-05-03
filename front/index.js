@@ -41,23 +41,17 @@ async function loadSection(section) {
     document.head.appendChild(link);
 
     // Charger dynamiquement le module JS
-    // try {
-    //     // Ici, on utilise `import()` pour charger le module en tant que module ES
-    //     currentModule = await import(`./sections/${section}/${section}.js?${Date.now()}`);  // Cache busting avec timestamp
+    try {
+        // Ici, on utilise `import()` pour charger le module en tant que module ES
+        currentModule = await import(`./sections/${section}/${section}.js?${Date.now()}`);  // Cache busting avec timestamp
 
-    //     // S'assurer que le module a une méthode `init()` si elle existe
-    //     if (typeof currentModule.init === "function") {
-    //         currentModule.init();  // Appeler `init()` si disponible
-    //     }
-    // } catch (e) {
-    //     console.error(`Erreur lors du chargement de ${section}.js`, e);
-    // }
-    const script = document.createElement('script');
-    script.src = `./sections/${section}/${section}.js`;
-    //script.type = 'module';
-    document.head.appendChild(script);
-
-    
+        // S'assurer que le module a une méthode `init()` si elle existe
+        if (typeof currentModule.init === "function") {
+            currentModule.init();  // Appeler `init()` si disponible
+        }
+    } catch (e) {
+        console.error(`Erreur lors du chargement de ${section}.js`, e);
+    }
 }
 
 
