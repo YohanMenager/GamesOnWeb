@@ -2,6 +2,9 @@ import { ChargeurDreamz } from "/classes/Jeu3/ChargeurDreamz.js";
 import { MenuDreamz } from "/classes/Jeu3/MenuDreamz.js";
 import { Timer } from '/classes/Timer.js';
 import { GestionPoints } from "../../classes/GestionPoints.js";
+// import {RecastJSPlugin} from 'https://cdn.babylonjs.com/recast.js';
+// import { BABYLON } from "https://cdn.babylonjs.com/babylon.js";
+
 
 let engine = null;
 let scene = null;
@@ -33,11 +36,9 @@ export function initBabylon() {
         const chargeur = new ChargeurDreamz(scene);
 
 
-
         const menu = new MenuDreamz(chargeur);
         await menu.init();
         chargeur.hud.menu = menu;
-        menu.demarrerNiveau(0);
 
         /*-----------------------------------------------------------------------------skybox-----------------------------------------------------------------------------*/
 
@@ -61,7 +62,7 @@ export function initBabylon() {
         //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
         let camera = new BABYLON.ArcRotateCamera("Camera", 5*Math.PI/4, Math.PI/4, 25, chargeur.joueur.hitbox.position, scene);
         // chargeur.camera = camera;
-        // camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
+        camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
        
 
         /*-----------------------------------------------------------------------------lumière-----------------------------------------------------------------------------*/
@@ -89,12 +90,19 @@ export function initBabylon() {
                 otherMesh.metadata.instance.desactiverSortie();
                 menu.niveauTermine(chargeur.niveau.getNumero());
             }
-            if (otherMesh.metadata?.type === "Ennemi")
+            if (otherMesh.metadata?.type === "Cauchemar")
             {
                 chargeur.mort();
             }
     });
 
+    /*-----------------------------------------------------------------------------navigation-----------------------------------------------------------------------------*/
+    Recast().then((recast) => {
+        const navigationPlugin = new BABYLON.RecastJSPlugin(recast);
+        scene.navigationPlugin = navigationPlugin;
+        
+      });
+      
     
 
 
@@ -108,6 +116,9 @@ export function initBabylon() {
         }
         if(chargeur.niveau)
         {
+            for (const ennemi of chargeur.niveau.ennemis) {
+                ennemi.update(chargeur.joueur.hitbox.position);
+            }
             /*-------------------------------------------------------------------vérifier si la sortie peut être activée-------------------------------------------------------------------*/
             let nbBonusRequis = 0;
             let sortie = null
@@ -136,43 +147,42 @@ export function initBabylon() {
             chargeur.hud.setNbCleTrouve(chargeur.niveau.nbCle - nbBonusRequis, chargeur.niveau.nbCle);
 
 
-            /*-------------------------------------------------------------------éviter la chute-------------------------------------------------------------------*/
+            /*-------------------------------------------------------------------chute-------------------------------------------------------------------*/
             if(chargeur.joueur.hitbox.position.y < -100)
                 {
                     chargeur.mort();
                 }    
             /*-------------------------------------------------------------------comportement ennemis-------------------------------------------------------------------*/
         
-            for (const ennemi of chargeur.niveau.ennemis) {
-                if (ennemi.mesh) {
-                    //trouver la direction du joueur
-                    const direction = directionJoueur(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
-                    let distance = distance2D(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
-                    //si le joueur est à moins de 40 unités de l'ennemi, il se déplace vers lui
-                    if (distance < 40) {
-                        // ennemi.hitbox.moveWithCollisions(direction.normalize().scaleInPlace(-0.05));
-                        ennemi.seDeplacer(direction.normalize());
-                    }
-                    else
-                    {
-                        if(ennemi.walk && ennemi.idle)
-                        {
-                            ennemi.walk.stop();
-                            ennemi.idle.start(true);
-                        }
-                    }
+            // for (const ennemi of chargeur.niveau.ennemis) {
+            //     if (ennemi.mesh) {
+            //         //trouver la direction du joueur
+            //         const direction = directionJoueur(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+            //         let distance = distance2D(chargeur.joueur.hitbox.position, ennemi.hitbox.position);
+            //         //si le joueur est à moins de 40 unités de l'ennemi, il se déplace vers lui
+            //         if (distance < 40) {
+            //             // ennemi.hitbox.moveWithCollisions(direction.normalize().scaleInPlace(-0.05));
+            //             ennemi.seDeplacer(direction.normalize());
+            //         }
+            //         else
+            //         {
+            //             if(ennemi.walk && ennemi.idle)
+            //             {
+            //                 ennemi.walk.stop();
+            //                 ennemi.idle.start(true);
+            //             }
+            //         }
 
                     
                     
-                }
-            }            
+            //     }
+            // }            
         }
  
     });
 
 
-
-
+        menu.demarrerNiveau(0);//lancer le jeu
 
         return scene;
     };
@@ -190,6 +200,7 @@ function distance2D(p1, p2) {
 function directionJoueur(joueur, ennemi) {
     return new BABYLON.Vector3(joueur.x - ennemi.x, 0, joueur.z - ennemi.z);
 }
+
 
 // if (typeof BABYLON === 'undefined') {
 //     const script = document.createElement('script');

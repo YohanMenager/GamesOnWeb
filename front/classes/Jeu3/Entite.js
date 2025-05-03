@@ -54,9 +54,9 @@ export class Entite extends IEntite
         if(this.gravite)
         {
             this.scene.onBeforeRenderObservable.add(() => {
-                this.hitbox.moveWithCollisions(new BABYLON.Vector3(0, -1*this.vitesseY, 0));
-                this.mesh.position.copyFrom(this.hitbox.position);
-                this.vitesseY += 0.05;
+                this.hitbox.moveWithCollisions(new BABYLON.Vector3(0, -1*this.vitesseY*Timer.getVitesse(), 0));
+                this.hitbox.position.copyFrom(this.hitbox.position);
+                this.vitesseY += 0.1;
                 
             });            
             //arrête la chute si on touche le sol	

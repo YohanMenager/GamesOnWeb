@@ -80,10 +80,14 @@ export class ChargeurDreamz extends Ichargeur {
                 this.joueur.mesh.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, -1, 0), Math.PI/2);
                 
                 this.camera = this.scene.activeCamera;
-                this.camera.target = this.joueur.hitbox.position;
-                this.camera.alpha = 5*Math.PI/4;
-                this.camera.beta = Math.PI/4;
-                this.camera.radius = 25; 
+                if(this.camera)
+                {
+                    this.camera.target = this.joueur.hitbox.position;
+                    this.camera.alpha = 5*Math.PI/4;
+                    this.camera.beta = Math.PI/4;
+                    this.camera.radius = 25;                     
+                }
+
             }
             else
             {
@@ -106,6 +110,7 @@ export class ChargeurDreamz extends Ichargeur {
                     await ennemi.init();
                     // await ennemi.init();
                     ennemi.hitbox.onCollideObservable.add((otherMesh) => {
+                        console.log("Collision avec l'ennemi !");
                         if (otherMesh.metadata?.type === "Joueur")
                         {
                             this.mort();
@@ -121,6 +126,10 @@ export class ChargeurDreamz extends Ichargeur {
                     }, 0);
                 }
             }
+        }
+        else
+        {
+            console.error("Niveau non reconnu !");
         }
         Timer.startTimer();
 

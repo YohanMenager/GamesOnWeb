@@ -6,8 +6,8 @@ export class lvl_2 extends Labyrinthe
 {
     constructor(scene)
     {
-        super([new Cauchemar(0.5, 0.6, "Cauchemar", new BABYLON.Vector3(170, 5, -170), scene, "skeleton.glb", 0.05),
-            new Cauchemar(0.5, 0.6, "Cauchemar", new BABYLON.Vector3(40, 5, -20), scene, "skeleton.glb", 0.05)
+        super([new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(170, 5, -170), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(170, 5, -170), new BABYLON.Vector3(190, 5, -110)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(40, 5, -20), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(40, 5, -20), new BABYLON.Vector3(30, 5, -120)]),
         ], //sortie
 
         [new Bonus({nom: "Sortie", position: new BABYLON.Vector3(280, 5, -20), scene: scene}),
