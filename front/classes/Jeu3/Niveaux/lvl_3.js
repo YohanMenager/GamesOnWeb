@@ -7,8 +7,12 @@ export class lvl_3 extends Labyrinthe
     constructor(scene)
     {
         super([
-            // new Cauchemar(0.5, 0.6, "Cauchemar", new BABYLON.Vector3(170, 5, -170), scene, "skeleton.glb", 0.05),
-            // new Cauchemar(0.5, 0.6, "Cauchemar", new BABYLON.Vector3(40, 5, -20), scene, "skeleton.glb", 0.05)
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(420, 5, -420), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(420, 5, -420), new BABYLON.Vector3(400, 5, -820)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(680, 5, -680), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(680, 5, -680), new BABYLON.Vector3(720, 5, -400)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(720, 5, -400), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(720, 5, -400), new BABYLON.Vector3(680, 5, -680)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(120, 5, -120), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(120, 5, -120), new BABYLON.Vector3(400, 5, -820)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(680, 5, -120), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(680, 5, -120), new BABYLON.Vector3(400, 5, -820)]),
+            new Cauchemar(0.5, 3, "Cauchemar", new BABYLON.Vector3(120, 5, -400), scene, "skeleton.glb", 0.05, [new BABYLON.Vector3(120, 5, -400), new BABYLON.Vector3(400, 5, -820)]),
         ], 
 
         [

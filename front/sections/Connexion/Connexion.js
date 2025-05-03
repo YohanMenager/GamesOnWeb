@@ -155,3 +155,11 @@ function setCookie(name, value, days) {
     d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
     document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
 }
+
+export function init() {
+    document.getElementById("login-header")?.addEventListener("click", afficherConnexion);
+    document.getElementById("signup-header")?.addEventListener("click", afficherInscription);
+    document.getElementById("connexion-button")?.addEventListener("click", connexion);
+    document.getElementById("inscription-button")?.addEventListener("click", inscription);
+    afficherConnexion();
+}

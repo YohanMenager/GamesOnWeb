@@ -5,7 +5,7 @@ import {Timer} from "../Timer.js";
 export class MenuDreamz extends Imenu{
     niveauxDebloques = 0;
 
-    constructor(chargeur, niveauxDebloques = 2)
+    constructor(chargeur, niveauxDebloques = 1)
     {
         super(chargeur);
         this.niveauxDebloques = niveauxDebloques;

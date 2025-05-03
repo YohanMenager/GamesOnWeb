@@ -9,8 +9,7 @@ import { GestionPoints } from "../../classes/GestionPoints.js";
 let engine = null;
 let scene = null;
 
-
-export function initBabylon() {
+export function init() {
     let canvas = document.getElementById('canvasJeu3');
     if (!canvas) {
         console.error("Canvas non trouvé");
@@ -62,7 +61,7 @@ export function initBabylon() {
         //et contrairement à la followcamera, ça part pas dans tous les sens au moindre mouvement
         let camera = new BABYLON.ArcRotateCamera("Camera", 5*Math.PI/4, Math.PI/4, 25, chargeur.joueur.hitbox.position, scene);
         // chargeur.camera = camera;
-        camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
+        // camera.attachControl(canvas, true);//pour faire des tests, doit être désactivé en production
        
 
         /*-----------------------------------------------------------------------------lumière-----------------------------------------------------------------------------*/
