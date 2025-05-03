@@ -11,67 +11,55 @@ document.querySelectorAll('.li').forEach(item => {
 });
 
 
-// Fonction pour charger une section HTML/CSS/JS dynamiquement
+let currentModule = null;
+
 async function loadSection(section) {
+
+    // Vérifier la connexion pour les sections de jeux
+    if (["Jeu1", "Jeu2", "Jeu3"].includes(section)) {
+        const username = getCookie("username");
+        if (!username) {
+            alert("Vous devez être connecté pour accéder à cette section.");
+            return loadSection("Connexion");
+        }
+    }    
     const content = document.getElementById('content');
 
-    if(section == "Jeu1" || section == "Jeu2" || section == "Jeu3")
-    {
-        let username = getCookie("username");
-        if(username == null)
-        {
-            alert("Vous devez être connecté pour accéder à cette section.");
-             return loadSection("Connexion");
-        }
-        else
-        {
-            disableScroll();
-        }
-    }
-    else
-    {
-        enableScroll();
-    }
-        
-    // Supprimer l'ancien script JS de section
-    const oldScript = document.querySelector('script[data-section-script]');
-    if (oldScript) oldScript.remove();
+    // Supprimer le précédent CSS de section
+    document.querySelectorAll("link[data-section-style]").forEach(link => link.remove());
 
-    // Supprimer le style associé
-    const oldStyle = document.querySelector(`#style-${section}`);
-    if (oldStyle) oldStyle.remove();
-
-    // Charger le HTML
+    // Charger le fichier HTML de la section
     const response = await fetch(`./sections/${section}/${section}.html`);
     const html = await response.text();
     content.innerHTML = html;
 
-    // Ajouter le CSS s'il n'existe pas déjà
-    if (!document.querySelector(`#style-${section}`)) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = `./sections/${section}/${section}.css`;
-        link.id = `style-${section}`;
-        document.head.appendChild(link);
+    // Ajouter le CSS pour la section
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `./sections/${section}/${section}.css`;
+    link.setAttribute("data-section-style", section);  // pour le retrouver et le supprimer si besoin
+    document.head.appendChild(link);
+
+    // // Décharger le module JS précédent (si besoin, via cleanup)
+    // if (currentModule && typeof currentModule.cleanup === "function") {
+    //     currentModule.cleanup();
+    // }
+
+
+    // Charger dynamiquement le module JS
+    try {
+        // Ici, on utilise `import()` pour charger le module en tant que module ES
+        currentModule = await import(`./sections/${section}/${section}.js?${Date.now()}`);  // Cache busting avec timestamp
+
+        // S'assurer que le module a une méthode `init()` si elle existe
+        if (typeof currentModule.init === "function") {
+            currentModule.init();  // Appeler `init()` si disponible
+        }
+    } catch (e) {
+        console.error(`Erreur lors du chargement de ${section}.js`, e);
     }
-
-    // Ajouter le JS de la section
-    const script = document.createElement('script');
-    script.src = `./sections/${section}/${section}.js`;
-    script.setAttribute('data-section-script', section);
-    script.type = 'module'; 
-
-    import(`./sections/${section}/${section}.js`)
-    .then(module => {
-      if (typeof module.init === 'function') {
-        module.init();
-      }
-    });
-
-
-    document.head.appendChild(script);
-
 }
+
 
 function toggleMenu()
 {
