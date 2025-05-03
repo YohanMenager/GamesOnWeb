@@ -40,24 +40,24 @@ async function loadSection(section) {
     link.setAttribute("data-section-style", section);  // pour le retrouver et le supprimer si besoin
     document.head.appendChild(link);
 
-    // // Décharger le module JS précédent (si besoin, via cleanup)
-    // if (currentModule && typeof currentModule.cleanup === "function") {
-    //     currentModule.cleanup();
-    // }
-
-
     // Charger dynamiquement le module JS
-    try {
-        // Ici, on utilise `import()` pour charger le module en tant que module ES
-        currentModule = await import(`./sections/${section}/${section}.js?${Date.now()}`);  // Cache busting avec timestamp
+    // try {
+    //     // Ici, on utilise `import()` pour charger le module en tant que module ES
+    //     currentModule = await import(`./sections/${section}/${section}.js?${Date.now()}`);  // Cache busting avec timestamp
 
-        // S'assurer que le module a une méthode `init()` si elle existe
-        if (typeof currentModule.init === "function") {
-            currentModule.init();  // Appeler `init()` si disponible
-        }
-    } catch (e) {
-        console.error(`Erreur lors du chargement de ${section}.js`, e);
-    }
+    //     // S'assurer que le module a une méthode `init()` si elle existe
+    //     if (typeof currentModule.init === "function") {
+    //         currentModule.init();  // Appeler `init()` si disponible
+    //     }
+    // } catch (e) {
+    //     console.error(`Erreur lors du chargement de ${section}.js`, e);
+    // }
+    const script = document.createElement('script');
+    script.src = `./sections/${section}/${section}.js`;
+    //script.type = 'module';
+    document.head.appendChild(script);
+
+    
 }
 
 
@@ -69,7 +69,6 @@ function toggleMenu()
     burger.classList.toggle('active');
 
 }
-window.toggleMenu = toggleMenu;
 
 
 
