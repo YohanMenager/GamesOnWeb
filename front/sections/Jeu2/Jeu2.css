@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    position: relative;
+}
+
+#myCanvas {
+    border: 1px solid black;
+    background-color: lightgrey;
+    display: block;
+    margin: auto;
+}
+
+#ecran-interface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 700px;
+    height: 700px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    font-size: 28px;
+    font-family: Arial, sans-serif;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#ecran-interface p {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#ecran-interface button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btn-demarrer {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#btn-rejouer {
+    background-color: #2196F3;
+    color: white;
+}
+
+#btn-arreter {
+    background-color: #f44336;
+    color: white;
+}
