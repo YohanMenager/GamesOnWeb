@@ -75,10 +75,13 @@ export class ChargeurDreamz extends Ichargeur {
                 
                 this.joueur.walk.start(true);
                 this.joueur.idle.stop();
+
+                //s'assurer que le mesh du joueur a la même position que la hitbox
+                this.joueur.mesh.position = this.joueur.hitbox.position;
                 
                 //faire tourner le joueur de 90 degrés
                 this.joueur.mesh.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, -1, 0), Math.PI/2);
-                
+
                 this.camera = this.scene.activeCamera;
                 if(this.camera)
                 {
