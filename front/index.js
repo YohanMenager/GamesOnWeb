@@ -29,7 +29,8 @@ async function loadSection(section) {
         {
             GestionPoints.init(username);  // Initialiser GestionPoints avec le nom d'utilisateur
         }
-    }    
+    }  
+    
     const content = document.getElementById('content');
 
     // Supprimer le précédent CSS de section
@@ -39,6 +40,19 @@ async function loadSection(section) {
     const response = await fetch(`./sections/${section}/${section}.html`);
     const html = await response.text();
     content.innerHTML = html;
+
+        // Si le module chargé est accueil, on rajoute sur les boutons les mêmes écouteurs que la navbar pour jouer aux jeux.
+    if (section === "Accueil") {
+        document.querySelectorAll('.btn-jeu').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.li').forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                const section = item.getAttribute('data-section');
+                loadSection(section);
+            });
+        });
+    }
+
 
     // Ajouter le CSS pour la section
     const link = document.createElement("link");
