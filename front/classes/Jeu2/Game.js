@@ -61,7 +61,6 @@ export default class Game {
         this.messageInterface = messageInterface;
         this.btnDemarrer = btnDemarrer;
         this.boutonsFin = boutonsFin;
-
         // Gestion de l'état du jeu
         this.encours = false ;
         // etat du clavier et de la souris

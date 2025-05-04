@@ -66,11 +66,9 @@ export class GestionPoints {
         const data = dataStr ? JSON.parse(dataStr) : null;
 
         if (data && data.points) {
-            console.log("Données trouvées");
             this.#PointsParJeu = data.points;
             return data.niveauxDebloques ?? 1;
         }
-        console.log("Aucune donnée trouvée, initialisation par défaut");
 
         // Aucune donnée trouvée, initialisation par défaut
         this.#PointsParJeu = {
