@@ -12,7 +12,7 @@ export class lvl_1 extends Labyrinthe
             [         
 
                 ],
-                new BABYLON.Vector3(260, 5, -280),//point de départ
+                new BABYLON.Vector3(260, 10, -280),//point de départ
                 scene,
             1,
             120,

@@ -1,3 +1,5 @@
+import { GestionPoints } from "/classes/GestionPoints.js";
+
 export function afficherConnexion() {
     let connexion = document.getElementById('connexion');
     if (!connexion.classList.contains('active')) {
@@ -118,36 +120,49 @@ export function inscription() {
     const username = document.getElementById("usernameInscription").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("passwordInscription").value;
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-
-    if (users.some(u => u.username === username)) {
-        alert("Nom d'utilisateur déjà pris.");
-        return false;
-    }
-    if (users.some(u => u.email === email)) {
-        alert("Adresse email déjà utilisée.");
-        return false;
-    }
-
-    users.push({ username, email, password, score: 0 });
-    localStorage.setItem('users', JSON.stringify(users));
-    alert("Inscription réussie !");
-    return true;
+    hashPassword(password).then(hashedPassword => {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users.push({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            score: 0,
+            points: {
+                1: { 1: 0, 2: 0, 3: 0 },
+                2: { 1: 0, 2: 0, 3: 0 },
+                3: { 1: 0, 2: 0, 3: 0 }
+            }
+        });
+        localStorage.setItem("users", JSON.stringify(users));
+        setCookie("username", username, 7);
+        alert("Inscription réussie !");
+        loadSection("Accueil");
+    });
 }
 
 export function connexion() {
     const username = document.getElementById("usernameConnexion").value;
     const password = document.getElementById("passwordConnexion").value;
     let users = JSON.parse(localStorage.getItem("users")) || [];
+    let user = users.find(u => u.username === username);
 
-    if (users.find(u => u.username === username && u.password === password)) {
-        setCookie("username", username, 7);
-        alert("Connexion réussie !");
-        return true;
-    } else {
-        alert("Nom d'utilisateur ou mot de passe incorrect.");
+    if (!user) {
+        alert("Utilisateur non trouvé.");
         return false;
     }
+
+    return hashPassword(password).then(hashed => {
+        if (hashed === user.password) {
+            setCookie("username", username, 7);
+            GestionPoints.charger(username); // Charger les points du joueur
+            alert("Connexion réussie !");
+            loadSection("Accueil");
+            return true;
+        } else {
+            alert("Mot de passe incorrect.");
+            return false;
+        }
+    });
 }
 
 function setCookie(name, value, days) {
@@ -162,4 +177,12 @@ export function init() {
     document.getElementById("connexion-button")?.addEventListener("click", connexion);
     document.getElementById("inscription-button")?.addEventListener("click", inscription);
     afficherConnexion();
+}
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }

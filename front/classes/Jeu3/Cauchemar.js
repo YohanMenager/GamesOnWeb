@@ -28,7 +28,7 @@ export class Cauchemar extends Entite
             radius: 0.5,
             height: 1.8,
             maxSlope: 45,
-            maxSpeed: 15,
+            maxSpeed: 12,
             maxAcceleration: 20,
             updatePosition: true,
             updateRotation: true,

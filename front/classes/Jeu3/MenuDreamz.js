@@ -3,12 +3,10 @@ import {GestionPoints} from "../GestionPoints.js";
 import {Timer} from "../Timer.js";
 
 export class MenuDreamz extends Imenu{
-    niveauxDebloques = 0;
 
-    constructor(chargeur, niveauxDebloques = 1)
+    constructor(chargeur)
     {
-        super(chargeur);
-        this.niveauxDebloques = niveauxDebloques;
+        super(chargeur, "dreamz");
     }
 
     async init()
@@ -69,16 +67,16 @@ export class MenuDreamz extends Imenu{
             });
         this.menuContainer.addControl(boutonAccueil);
 
-        for(let i = 0; i < this.chargeur.nbNiveaux; i++)
+        for(let i = 1; i <= this.chargeur.nbNiveaux; i++)
         {
-            const boutonNiveau = BABYLON.GUI.Button.CreateSimpleButton(`niveau${i}`, `Niveau ${i+1}`);
+            const boutonNiveau = BABYLON.GUI.Button.CreateSimpleButton(`niveau${i}`, `Niveau ${i}`);
             boutonNiveau.width = "150px";
             boutonNiveau.height = "50px";
             boutonNiveau.color = "black";
             boutonNiveau.fontSize = 25;
             boutonNiveau.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
             boutonNiveau.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            boutonNiveau.top = `${(i+1)*60}px`;
+            boutonNiveau.top = `${(i)*60}px`;
             boutonNiveau.left = "-10px";
             boutonNiveau.paddingLeft = "10px";
             boutonNiveau.paddingTop = "10px";
@@ -86,19 +84,20 @@ export class MenuDreamz extends Imenu{
             boutonNiveau.paddingBottom = "10px";
             boutonNiveau.textBlock.color = "black";
             boutonNiveau.textBlock.fontSize = 25;
-            
-            if(i+1 < this.niveauxDebloques)
+            console.log("niveau débloqué : ", this.niveauxDebloques);
+            console.log("niveau : ", i);
+            if(i < this.niveauxDebloques)
             {
                 boutonNiveau.background = "yellow";
                 boutonNiveau.onPointerClickObservable.add(() => {
-                    this.demarrerNiveau(i+1);
+                    this.demarrerNiveau(i);
                 });
             }
-            else if(i+1 == this.niveauxDebloques)
+            else if(i == this.niveauxDebloques)
             {
                 boutonNiveau.background = "blue";
                 boutonNiveau.onPointerClickObservable.add(() => {
-                    this.demarrerNiveau(i+1);
+                    this.demarrerNiveau(i);
                 });
             }
             else
@@ -170,7 +169,7 @@ export class MenuDreamz extends Imenu{
         {
             for(let bouton of this.menuContainer.children)
             {
-                if(bouton.name == `niveau${numero}`)
+                if(bouton.name == `niveau${numero+1}`)
                 {
                     bouton.background = "blue";
                     bouton.alpha = 1;
@@ -179,7 +178,7 @@ export class MenuDreamz extends Imenu{
                         this.demarrerNiveau(numero+1);
                     });
                 }
-                if(bouton.name == `niveau${numero-1}`)
+                if(bouton.name == `niveau${numero}`)
                     {
                         bouton.background = "yellow";
                         // bouton.alpha = 1;
@@ -189,8 +188,10 @@ export class MenuDreamz extends Imenu{
                         // });
                     }
             }
-            this.niveauxDebloques++;
         }
+        this.debloquerNiveau();
+        GestionPoints.sauvegarder(this.niveauxDebloques);
+
         this.afficherMenu();
     }
 }
