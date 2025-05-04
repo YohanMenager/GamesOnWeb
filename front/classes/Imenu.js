@@ -31,20 +31,25 @@ export class Imenu {
      * @description Charge la progression du joueur depuis la clé data_<username>.
      */
     chargerProgression() {
-        const data = JSON.parse(localStorage.getItem("data_" + this.username)) || {};
-        const val = parseInt(data["progression_" + this.nomJeu]);
-        this.niveauxDebloques = isNaN(val) ? 1 : val;
+        const username = this.getCookie("username");
+        const dataStr = localStorage.getItem("data_" + username);
+        const data = dataStr ? JSON.parse(dataStr) : {};
+        this.niveauxDebloques = data["niveauxDebloques_" + this.nomJeu] || 1;
     }
+    
 
     /**
      * @description Sauvegarde la progression du joueur dans data_<username>.
      */
     sauvegarderProgression() {
-        const key = "data_" + this.username;
-        const data = JSON.parse(localStorage.getItem(key)) || {};
-        data["progression_" + this.nomJeu] = this.niveauxDebloques;
+        const username = this.getCookie("username");
+        const key = "data_" + username;
+        const dataStr = localStorage.getItem(key);
+        const data = dataStr ? JSON.parse(dataStr) : {};
+        data["niveauxDebloques_" + this.nomJeu] = this.niveauxDebloques;
         localStorage.setItem(key, JSON.stringify(data));
     }
+    
 
     debloquerNiveau() {
         this.niveauxDebloques++;

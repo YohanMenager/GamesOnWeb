@@ -69,8 +69,10 @@ export class MenuDreamz extends Imenu{
 
         for(let i = 1; i <= this.chargeur.nbNiveaux; i++)
         {
-            const boutonNiveau = BABYLON.GUI.Button.CreateSimpleButton(`niveau${i}`, `Niveau ${i}`);
-            boutonNiveau.width = "150px";
+            const points = GestionPoints.getPointsParJeu(3)[i] || 0;
+            const boutonNiveau = BABYLON.GUI.Button.CreateSimpleButton(`niveau${i}`, `Niveau ${i} - ${points} pts`);
+            
+            boutonNiveau.width = "300px";
             boutonNiveau.height = "50px";
             boutonNiveau.color = "black";
             boutonNiveau.fontSize = 25;
@@ -84,8 +86,6 @@ export class MenuDreamz extends Imenu{
             boutonNiveau.paddingBottom = "10px";
             boutonNiveau.textBlock.color = "black";
             boutonNiveau.textBlock.fontSize = 25;
-            console.log("niveau débloqué : ", this.niveauxDebloques);
-            console.log("niveau : ", i);
             if(i < this.niveauxDebloques)
             {
                 boutonNiveau.background = "yellow";
@@ -162,6 +162,14 @@ export class MenuDreamz extends Imenu{
         {
             GestionPoints.setPointsNiveau(3, numero, pointsGagnes);
             console.log(`Nouveau score pour le niveau ${numero} : ${pointsGagnes}`);
+            for (let bouton of this.menuContainer.children) {
+                if (bouton.name === `niveau${numero}`) {
+                    const points = GestionPoints.getPointsParJeu(3)[numero] || 0;
+                    bouton.textBlock.text = `Niveau ${numero} - ${points} pts`;
+                    break;
+                }
+            }
+            GestionPoints.sauvegarder();
         }
 
         //pour gérer si on débloque le niveau suivant ou pas
@@ -188,9 +196,9 @@ export class MenuDreamz extends Imenu{
                         // });
                     }
             }
+            this.debloquerNiveau();
+            
         }
-        this.debloquerNiveau();
-        GestionPoints.sauvegarder(this.niveauxDebloques);
 
         this.afficherMenu();
     }

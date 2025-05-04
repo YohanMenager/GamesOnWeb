@@ -1,5 +1,3 @@
-import { GestionPoints } from "/classes/GestionPoints.js";
-
 export function afficherConnexion() {
     let connexion = document.getElementById('connexion');
     if (!connexion.classList.contains('active')) {
@@ -154,7 +152,6 @@ export function connexion() {
     return hashPassword(password).then(hashed => {
         if (hashed === user.password) {
             setCookie("username", username, 7);
-            GestionPoints.charger(username); // Charger les points du joueur
             alert("Connexion réussie !");
             loadSection("Accueil");
             return true;

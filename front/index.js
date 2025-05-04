@@ -1,3 +1,6 @@
+import { GestionPoints } from "./classes/GestionPoints.js";
+
+
 loadSection("Accueil");
 
 // Gérer les clics sur la navigation
@@ -21,6 +24,10 @@ async function loadSection(section) {
         if (!username) {
             alert("Vous devez être connecté pour accéder à cette section.");
             return loadSection("Connexion");
+        }
+        else
+        {
+            GestionPoints.init(username);  // Initialiser GestionPoints avec le nom d'utilisateur
         }
     }    
     const content = document.getElementById('content');
