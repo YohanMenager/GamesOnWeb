@@ -7,8 +7,8 @@ export default class Grille {
   cookiesSelectionnees = [];
 
   constructor(l, c) {
-    this.audioCoup = new Audio('./assets/sounds/pop.mp3');
-    this.audioPoint = new Audio('./assets/sounds/point.mp3');
+    this.audioCoup = new Audio('../../assets/sounds/pop.mp3');
+    this.audioPoint = new Audio('../../assets/sounds/point.mp3');
     this.colonnes = c;
     this.lignes = l;
     this.nombreDeCoup=25

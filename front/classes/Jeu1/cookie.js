@@ -1,20 +1,20 @@
 
 export default class Cookie {  
   static urlsImagesNormales = [
-    "./assets/images/Croissant@2x.png",
-    "./assets/images/Cupcake@2x.png",
-    "./assets/images/Danish@2x.png",
-    "./assets/images/Donut@2x.png",
-    "./assets/images/Macaroon@2x.png",
-    "./assets/images/SugarCookie@2x.png",
+    "../../assets/img/Croissant@2x.png",
+    "../../assets/img/Cupcake@2x.png",
+    "../../assets/img/Danish@2x.png",
+    "../../assets/img/Donut@2x.png",
+    "../../assets/img/Macaroon@2x.png",
+    "../../assets/img/SugarCookie@2x.png",
   ];
   static urlsImagesSurlignees = [
-    "./assets/images/Croissant-Highlighted@2x.png",
-    "./assets/images/Cupcake-Highlighted@2x.png",
-    "./assets/images/Danish-Highlighted@2x.png",
-    "./assets/images/Donut-Highlighted@2x.png",
-    "./assets/images/Macaroon-Highlighted@2x.png",
-    "./assets/images/SugarCookie-Highlighted@2x.png",
+    "../../assets/img/Croissant-Highlighted@2x.png",
+    "../../assets/img/Cupcake-Highlighted@2x.png",
+    "../../assets/img/Danish-Highlighted@2x.png",
+    "../../assets/img/Donut-Highlighted@2x.png",
+    "../../assets/img/Macaroon-Highlighted@2x.png",
+    "../../assets/img/SugarCookie-Highlighted@2x.png",
   ];
 
   constructor(type, ligne, colonne) {
