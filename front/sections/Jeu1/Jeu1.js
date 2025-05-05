@@ -9,7 +9,7 @@ window.onload = init;
 
 let grille;
 
-function init() {
+export function init() {
   console.log("Page et ressources prêtes à l'emploi");
   // appelée quand la page et ses ressources sont prêtes.
   // On dit aussi que le DOM est ready (en fait un peu plus...)
