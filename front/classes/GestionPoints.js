@@ -105,4 +105,66 @@ export class GestionPoints {
     static resetPoints() {
         this.#points = 0;
     }
+
+    static getTotalPointsParJoueur() {
+        const totalParJoueur = {};
+        
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+    
+            if (key.startsWith("data_points_")) {
+                const username = key.replace("data_points_", "");
+                const dataStr = localStorage.getItem(key);
+                if (!dataStr) continue;
+    
+                const data = JSON.parse(dataStr);
+                if (!data.points) continue;
+    
+                const total = Object.values(data.points)
+                    .flatMap(niveaux => Object.values(niveaux))
+                    .reduce((a, b) => a + b, 0);
+    
+                totalParJoueur[username] = total;
+            }
+        }
+    
+        return totalParJoueur;
+    }
+    
+    static getClassementGeneral() {
+        const totalParJoueur = this.getTotalPointsParJoueur();
+        return Object.entries(totalParJoueur)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3);
+    }
+    
+    static getClassementParJeu(numeroJeu) {
+        const classement = [];
+    
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+    
+            if (key.startsWith("data_points_")) {
+                const username = key.replace("data_points_", "");
+                console.log("username", username);
+                const dataStr = localStorage.getItem(key);
+                console.log("dataStr", dataStr);
+                if (!dataStr) continue;
+    
+                const data = JSON.parse(dataStr);
+                console.log("data", data);
+                console.log("data.points", data.points);
+                console.log("data.points[",numeroJeu,"]", data.points[numeroJeu]);
+                if (!data.points || !data.points[numeroJeu]) continue;
+                const total = Object.values(data.points[numeroJeu])
+                    .reduce((a, b) => a + b, 0);
+                console.log("total", total);
+                classement.push([username, total]);
+            }
+        }
+        console.log(classement);
+        return classement.sort((a, b) => b[1] - a[1]).slice(0, 3);
+    }
+    
+    
 }
