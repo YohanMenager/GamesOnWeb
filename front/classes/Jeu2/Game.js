@@ -250,7 +250,7 @@ export default class Game {
         this.backgroundImage.src = backgrounds[this.niveau % backgrounds.length];
     
         // Changer la musique de fond pour le niveau actuel
-        //this.setMusic();
+        this.setMusic();
     }
 
     resizeCanvas() {
@@ -462,7 +462,6 @@ export default class Game {
                 this.afficherEcranFin("🎉 Bravo, vous avez gagné !");
                 return;
             }            
-            this.initNiveau(this.niveau);
         }
     }
 

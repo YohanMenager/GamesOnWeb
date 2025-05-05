@@ -1,6 +1,6 @@
 /*Gère l'initialisation du jeu (window.onload), ajuste la taille du canvas, et démarre Game.js.
 */
-import Game from "/classes/Jeu2/Game.js";
+import Game from "../../classes/Jeu2/Game.js";
 
 let game = null;
 // Bonne pratique : avoir une fonction appelée une fois

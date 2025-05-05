@@ -11,15 +11,20 @@ body {
 }
 
 #ecran-interface {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 700px;
-    height: 700px;
-    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90vw;
+    height: auto;
+    padding: 40px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298); /* dégradé élégant */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     color: white;
-    font-size: 28px;
-    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -27,18 +32,24 @@ body {
     justify-content: center;
 }
 
+
 #ecran-interface p {
     margin-bottom: 20px;
     text-align: center;
 }
 
 #ecran-interface button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 18px;
     margin: 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#ecran-interface button:hover {
+    transform: scale(1.05);
 }
 
 #btn-demarrer {
