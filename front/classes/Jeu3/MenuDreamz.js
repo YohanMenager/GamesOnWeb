@@ -183,12 +183,9 @@ export class MenuDreamz extends Imenu{
         this.chargeur.hud.cacher();
         //gestion des points
         let pointsGagnes = this.chargeur.niveau.calculerScoreNiveau();
-        console.log(`Points gagnés : ${pointsGagnes}`);
-        console.log('ancien score :', GestionPoints.getPointsParJeu(3)[numero]);
         if(pointsGagnes > GestionPoints.getPointsParJeu(3)[numero])
         {
             GestionPoints.setPointsNiveau(3, numero, pointsGagnes);
-            console.log(`Nouveau score pour le niveau ${numero} : ${pointsGagnes}`);
             for (let bouton of this.menuContainer.children) {
                 if (bouton.name === `niveau${numero}`) {
                     const points = GestionPoints.getPointsParJeu(3)[numero] || 0;
@@ -198,26 +195,26 @@ export class MenuDreamz extends Imenu{
             }
             GestionPoints.sauvegarder();
 
-            // Met à jour le classement
-            const nouveauClassement = GestionPoints.getClassementParJeu(3);
+            // // Met à jour le classement
+            // const nouveauClassement = GestionPoints.getClassementParJeu(3);
 
-            // Supprime les anciens blocs de classement s'ils existent
-            this.menuContainer.children = this.menuContainer.children.filter(control => {
-                return !(control.name && control.name.startsWith("classement_"));
-            });
+            // // Supprime les anciens blocs de classement s'ils existent
+            // this.menuContainer.children = this.menuContainer.children.filter(control => {
+            //     return !(control.name && control.name.startsWith("classement_"));
+            // });
 
-            // Ajoute les nouveaux
-            for (let i = 0; i < nouveauClassement.length; i++) {
-                const [joueur, score] = nouveauClassement[i];
-                const ligne = new BABYLON.GUI.TextBlock(`classement_${i}`);
-                ligne.text = `${i + 1}. ${joueur} - ${score} pts`;
-                ligne.color = "white";
-                ligne.fontSize = 24;
-                ligne.height = "40px";
-                ligne.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-                ligne.name = `classement_${i}`;
-                this.menuContainer.addControl(ligne);
-            }
+            // // Ajoute les nouveaux
+            // for (let i = 0; i < nouveauClassement.length; i++) {
+            //     const [joueur, score] = nouveauClassement[i];
+            //     const ligne = new BABYLON.GUI.TextBlock(`classement_${i}`);
+            //     ligne.text = `${i + 1}. ${joueur} - ${score} pts`;
+            //     ligne.color = "white";
+            //     ligne.fontSize = 24;
+            //     ligne.height = "40px";
+            //     ligne.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+            //     ligne.name = `classement_${i}`;
+            //     this.menuContainer.addControl(ligne);
+            // }
         
 
         }
