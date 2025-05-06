@@ -51,7 +51,7 @@ export default class Game {
     score = 0;
 
     // Ajouter une propriété pour le temps de jeu 
-    tempsRestant = 30; // Temps limite pour chaque niveau en secondes
+    tempsRestant = 30; 
 
     constructor(canvas,{ ecranInterface, messageInterface, btnDemarrer, boutonsFin }) {
         this.canvas = canvas;
@@ -61,6 +61,7 @@ export default class Game {
         this.messageInterface = messageInterface;
         this.btnDemarrer = btnDemarrer;
         this.boutonsFin = boutonsFin;
+
         // Gestion de l'état du jeu
         this.encours = false ;
         // etat du clavier et de la souris
@@ -78,6 +79,7 @@ export default class Game {
         
         // Charger la musique de fond
         this.backgroundMusic = new Audio();
+
         // Demander la lecture de la musique au clic
         document.addEventListener("click", () => {
             if (this.encours && this.backgroundMusic.paused) {
@@ -123,9 +125,9 @@ export default class Game {
 
     // Méthode pour jouer l'effet sonore de collision
     jouerSonCollision() {
-        this.collisionSound.pause(); // Met en pause si le son était en cours
-        this.collisionSound.currentTime = 0; // Remet le son au début
-        this.collisionSound.volume = 1.0; // Assure que le volume est bien actif
+        this.collisionSound.pause(); 
+        this.collisionSound.currentTime = 0; 
+        this.collisionSound.volume = 1.0;
     
         this.collisionSound.play().catch(error => {
             console.warn("Lecture du son de collision bloquée :", error);
@@ -146,10 +148,9 @@ export default class Game {
         }
     }
     
-    
 
     jouerSonVictoire() {
-        this.victoireSound.play(); // Jouer l'effet sonore de victoire
+        this.victoireSound.play(); 
     }
 
 
@@ -240,7 +241,7 @@ export default class Game {
             this.objetsGraphiques.push(powerUp);
         }
         // Réinitialser le temps de jeu pour le niveau
-        this.tempsRestant = 30; // 30 secondes pour chaque niveau
+        this.tempsRestant = 30; 
 
         // Création des ennemis
         const ennemi = new Ennemi(200, 200, 40, 40, "black",this.canvas);
@@ -279,7 +280,7 @@ export default class Game {
             if (this.tempsRestant > 0) {
                this.tempsRestant--;
             } else {
-            this.afficherEcranFin("⏰ Temps écoulé ! Vous avez perdu !");
+            this.afficherEcranFin("Temps écoulé ! Vous avez perdu !");
             }
         }, 1000);
 
@@ -347,7 +348,7 @@ export default class Game {
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof PowerUp && rectsOverlap(this.player.x - this.player.w / 2, this.player.y - this.player.h / 2, this.player.w, this.player.h, obj.x, obj.y, obj.w, obj.h)) {
             console.log ("Power-up ramassé !"); 
-            this.powerUpSound.play(); // Jouer l'effet sonore du power-up
+            this.powerUpSound.play(); 
 
             //Génération de particules
             for (let i = 0; i < 20; i++) {
@@ -459,7 +460,7 @@ export default class Game {
             this.score += 100; // Augmenter le score de 100 point
             if (this.niveau > 7) {
                 this.jouerSonVictoire();
-                this.afficherEcranFin("🎉 Bravo, vous avez gagné !");
+                this.afficherEcranFin("Bravo, vous avez gagné !");
                 return;
             }            
         }
