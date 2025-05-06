@@ -77,7 +77,6 @@ Le joueur peut perdre de différentes façons :
 - Si le joueur réussit à passer tous les niveaux, il entend un son de victoire et voit un message de félicitations.
 
 
-
 ## crédits
 ### assets 3D
 Urotsuki par [uosew](https://www.fab.com/sellers/uosew/about)
