@@ -19,9 +19,9 @@ let currentModule = null;
 export async function loadSection(section) {
 
 
+    const username = getCookie("username");
     // Vérifier la connexion pour les sections de jeux
     if (["Jeu1", "Jeu2", "Jeu3"].includes(section)) {
-        const username = getCookie("username");
         if (!username) {
             alert("Vous devez être connecté pour accéder à cette section.");
             return loadSection("Connexion");
@@ -31,6 +31,12 @@ export async function loadSection(section) {
             GestionPoints.init(username);  // Initialiser GestionPoints avec le nom d'utilisateur
         }
     }  
+
+    if(username)
+    {
+        let afficheScore = document.getElementById("affichage-score");
+        afficheScore.innerHTML = username + " - Score : " + GestionPoints.getTotalPointsParJoueur()[username];
+    }
     
     const content = document.getElementById('content');
 

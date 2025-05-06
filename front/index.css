@@ -11,6 +11,11 @@ body
     background-attachment: fixed;
 }
 
+#affichage-score
+{
+    margin-left: 1vw;
+}
+
 .burger
 {
     display: none;
