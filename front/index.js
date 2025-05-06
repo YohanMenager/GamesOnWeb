@@ -16,7 +16,7 @@ document.querySelectorAll('.li').forEach(item => {
 
 let currentModule = null;
 
-async function loadSection(section) {
+export async function loadSection(section) {
 
     // Vérifier la connexion pour les sections de jeux
     if (["Jeu1", "Jeu2", "Jeu3"].includes(section)) {
