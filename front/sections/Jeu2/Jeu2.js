@@ -70,5 +70,5 @@ export async function init() {
     });
     
     btnArreter.addEventListener("click", () => {
-        window.location.href = "https://universalmusic.fr/artistes/31929242684";
+        window.location.href = "http://127.0.0.1:5500/front/index.html?username=Monnom&password=A123456789";
     });
