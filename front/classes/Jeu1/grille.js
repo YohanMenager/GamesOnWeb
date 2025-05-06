@@ -1,3 +1,4 @@
+import { GestionPoints } from "../GestionPoints.js";
 import Cookie from "./cookie.js";
 import { create2DArray } from "./utils.js";
 
@@ -11,7 +12,7 @@ export default class Grille {
     this.audioPoint = new Audio('../../assets/sounds/point.mp3');
     this.colonnes = c;
     this.lignes = l;
-    this.nombreDeCoup=25
+    this.nombreDeCoup=25;
     this.score = 0;
     // le tableau des cookies
     this.cookies = create2DArray(l);
@@ -274,7 +275,9 @@ export default class Grille {
         }
         this.showCookies();
         this.testAlignementDansTouteLaGrille();
+        
     }
+    this.score=0;
   }
 
   coupPlayed() {
@@ -365,13 +368,26 @@ export default class Grille {
   checkGameOver() {
     if (this.nombreDeCoup == 0) {
       let modal = document.getElementById("gameOverModal");
-      let finalScore = document.getElementById("finalScore");
+      let finalScore = document.getElementById("finalscore");
       finalScore.textContent = "Score : " + this.score;
       modal.style.display = "block";
       
       document.getElementById("replayButton").onclick = () => {
         location.reload(); 
       };
+
+      if(this.score > GestionPoints.getPointsParJeu(1)[1])
+      {
+        GestionPoints.setPointsNiveau(1, 1, this.score);
+        GestionPoints.sauvegarder();
+      }
+      else if(GestionPoints.getPointsParJeu(1)[1] == null){
+        GestionPoints.setPointsNiveau(1, 1, this.score);
+        GestionPoints.sauvegarder();
+      }
+      let MaxScoreElem = document.getElementById("maxscore");
+      let MaxScore = GestionPoints.getPointsParJeu(1)[1];
+      MaxScoreElem.textContent = "Max Score : " + MaxScore;
     }
   }
 }
