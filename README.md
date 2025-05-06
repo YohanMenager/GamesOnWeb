@@ -1,10 +1,14 @@
 # GamesOnWeb
 
 ## lancer le projet :
-le site est disponible à [cette adresse](https://games-on-web-omega.vercel.app)
-pour le lancer après l'avoir cloné, il faut aller dans le dossier back et lancer les commandes suivantes:
-  npm install
-  npm start
+Le site est disponible à [cette adresse](https://games-on-web-omega.vercel.app).
+
+Pour le lancer après l'avoir cloné, il faut aller dans le dossier back et lancer les commandes suivantes:
+
+      npm install
+  
+      npm start
+  
 assurez-vous d'avoir le port 4000 libre.
 
 ## crédits
