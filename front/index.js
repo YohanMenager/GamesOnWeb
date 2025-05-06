@@ -35,7 +35,9 @@ export async function loadSection(section) {
     if(username)
     {
         let afficheScore = document.getElementById("affichage-score");
-        afficheScore.innerHTML = username + " - Score : " + GestionPoints.getTotalPointsParJoueur()[username];
+        //récupérer le score du joueur, s'il n'existe pas, on met 0
+        let score = GestionPoints.getTotalPointsParJoueur()[username] || 0;
+        afficheScore.innerHTML = username + " - Score : " + score;
     }
     
     const content = document.getElementById('content');
