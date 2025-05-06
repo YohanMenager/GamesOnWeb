@@ -2,6 +2,7 @@ import { ChargeurDreamz } from "/classes/Jeu3/ChargeurDreamz.js";
 import { MenuDreamz } from "/classes/Jeu3/MenuDreamz.js";
 import { Timer } from '/classes/Timer.js';
 import { GestionPoints } from "../../classes/GestionPoints.js";
+import { loadSection } from "../../index.js";   
 // import {RecastJSPlugin} from 'https://cdn.babylonjs.com/recast.js';
 // import { BABYLON } from "https://cdn.babylonjs.com/babylon.js";
 
@@ -96,12 +97,24 @@ export function init() {
     });
 
     /*-----------------------------------------------------------------------------navigation-----------------------------------------------------------------------------*/
-    Recast().then((recast) => {
+    waitForRecast().then((RecastLib) => {
+        return RecastLib();
+    }).then((recast) => {
         const navigationPlugin = new BABYLON.RecastJSPlugin(recast);
         scene.navigationPlugin = navigationPlugin;
-        
-      });
-      
+    }).catch((err) => {
+        console.error("Erreur lors du chargement de Recast :", err);
+    
+        // Recharge une seule fois la section
+        if (!window._recastRetryDone) {
+            window._recastRetryDone = true;
+            console.warn("Tentative de rechargement de la section...");
+            loadSection("Jeu3"); // ou autre nom de section
+        } else {
+            alert("Erreur lors du chargement de la navigation du jeu. Veuillez recharger la page.");
+        }
+    });
+    
     
 
 
@@ -199,6 +212,23 @@ function distance2D(p1, p2) {
 function directionJoueur(joueur, ennemi) {
     return new BABYLON.Vector3(joueur.x - ennemi.x, 0, joueur.z - ennemi.z);
 }
+
+function waitForRecast(maxWait = 3000) {
+    return new Promise((resolve, reject) => {
+        const start = Date.now();
+
+        (function check() {
+            if (typeof Recast === 'function') {
+                resolve(Recast);
+            } else if (Date.now() - start > maxWait) {
+                reject(new Error("Recast n'a pas été chargé à temps"));
+            } else {
+                requestAnimationFrame(check);
+            }
+        })();
+    });
+}
+
 
 
 // if (typeof BABYLON === 'undefined') {
