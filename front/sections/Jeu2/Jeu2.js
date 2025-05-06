@@ -1,6 +1,7 @@
 /*Gère l'initialisation du jeu (window.onload), ajuste la taille du canvas, et démarre Game.js.
 */
-import Game from "../../classes/Jeu2/Game.js";
+import Game from "/classes/Jeu2/Game.js";
+import { loadSection } from "../../index.js";   
 
 let game = null;
 // Bonne pratique : avoir une fonction appelée une fois
@@ -66,9 +67,9 @@ export async function init() {
     });
     
     btnRejouer.addEventListener("click", () => {
-        window.location.reload();
+        loadSection("Jeu2");
     });
     
     btnArreter.addEventListener("click", () => {
-        window.location.href = "http://127.0.0.1:5500/front/index.html?username=Monnom&password=A123456789";
+        loadSection("Accueil");
     });

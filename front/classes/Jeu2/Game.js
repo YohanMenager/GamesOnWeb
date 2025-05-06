@@ -42,6 +42,7 @@ import ObjetSpecial from "./ObjetSpecial.js";
 import PowerUp from "./PowerUp.js";
 import Ennemi from "./Ennemi.js";
 import Particle from "./Particles.js";
+import { GestionPoints } from "../GestionPoints.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -136,6 +137,7 @@ export default class Game {
 
     // Méthode pour gérer l'écran de fin de jeu
     afficherEcranFin(message) {
+        message+= `\n\nVotre score : ${this.score}\n\n record : ${GestionPoints.getPointsNiveau(2, 1)}`;
         this.messageInterface.textContent = message;
         this.btnDemarrer.style.display = "none";
         this.boutonsFin.style.display = "flex";
@@ -459,6 +461,13 @@ export default class Game {
             this.initNiveau(this.niveau);
             this.score += 100; // Augmenter le score de 100 point
             if (this.niveau > 7) {
+                if(this.score > GestionPoints.getPointsParJeu(2)[1] || !GestionPoints.getPointsParJeu(2)[1]) {
+                    GestionPoints.setPointsNiveau(2, 1, this.score); // Sauvegarder le score
+                    GestionPoints.sauvegarder(); // Sauvegarder les points
+                }
+                {
+
+                }
                 this.jouerSonVictoire();
                 this.afficherEcranFin("Bravo, vous avez gagné !");
                 return;
