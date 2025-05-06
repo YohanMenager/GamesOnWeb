@@ -18,6 +18,7 @@ let currentModule = null;
 
 export async function loadSection(section) {
 
+
     // Vérifier la connexion pour les sections de jeux
     if (["Jeu1", "Jeu2", "Jeu3"].includes(section)) {
         const username = getCookie("username");
